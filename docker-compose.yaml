@@ -1,0 +1,54 @@
+services:
+  api:
+    container_name: pyhr_api
+    profiles: ["api"]
+    build: ./pyHR
+    entrypoint: uvicorn app.main:app --host 0.0.0.0 --reload
+    volumes:
+      - ./pyHR/app:/code/app
+    environment:
+        DEBUG: 1
+        WATCHFILES_FORCE_POLLING: true
+        DB_URL: "postgresql://pyhr_api:pyhr123@localhost/pyhr"
+    image: pyhr/api:latest
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /code/app
+    restart: on-failure
+
+  db:
+    container_name: pyhr_db
+    image: postgres
+    profiles: ["database"]
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: admin123
+        POSTGRES_DB: pyhr
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/db.sql
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+      container_name: pyhr_pgadmin
+      image: dpage/pgadmin4:9.2.0
+      profiles: ["database"]
+      depends_on:
+        - db
+      ports:
+        - "5050:5050"
+      environment:
+          PGADMIN_DEFAULT_EMAIL: admin@admin.com
+          PGADMIN_DEFAULT_PASSWORD: admin123
+          PGADMIN_LISTEN_PORT: 5050
+      restart: unless-stopped
+volumes:
+  pgdata:
