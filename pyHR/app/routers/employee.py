@@ -3,7 +3,8 @@ from fastapi import APIRouter, Query
 
 
 from app.database.db import SessionDep
-from app.database.entities.employee import Employee
+from app.database.models.employee import Employee
+from app.security.security import TokenDep
 
 router = APIRouter(
     prefix="/employee",
@@ -16,6 +17,11 @@ router = APIRouter(
 @router.get("/")
 async def index():
     return {"message": "This is main info about employees"}
+
+
+@router.get("/token")
+def token(token: TokenDep):
+    return {"token": token}
 
 @router.get("/all")
 def get_employees(session: SessionDep,

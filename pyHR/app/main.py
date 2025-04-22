@@ -1,9 +1,15 @@
 from fastapi import FastAPI
-from .routers import employee
+
+from .logger import setup_logging
+from .routers import employee, login
+
+setup_logging()
 
 app = FastAPI()
 
+app.include_router(login.router)
 app.include_router(employee.router)
+
 
 
 
