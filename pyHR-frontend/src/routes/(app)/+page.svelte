@@ -1,0 +1,1 @@
+<p>Tu jest strona główna aplikacji</p>
