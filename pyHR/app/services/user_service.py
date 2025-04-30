@@ -1,8 +1,8 @@
-from fastapi import Depends
 from typing import Annotated
-from loguru import logger
 
-from app.database.models.employee import User, Employee
+from fastapi import Depends
+
+from app.database.models.employee_model import User
 from app.database.repositories.user_repository import UserRepository
 
 

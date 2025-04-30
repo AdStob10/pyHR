@@ -3,7 +3,7 @@ from sqlmodel import select
 from loguru import logger
 
 from app.database.db import SessionDep
-from app.database.models.employee import User, Employee
+from app.database.models.employee_model import User, Employee
 
 
 class UserRepository:

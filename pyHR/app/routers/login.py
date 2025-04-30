@@ -5,14 +5,14 @@ from typing import Annotated
 from fastapi import HTTPException
 from starlette import status
 
-from app.database.models.employee import Token, User, UserPublic
-from app.security.security import create_access_token, CurrentUser, authenticate
-from app.services.user_service import UserService
+from ..database.models.employee_model import UserPublic
+from ..security.security import create_access_token, CurrentUser, authenticate, Token
+from ..services.user_service import UserService
 
 router = APIRouter(
     prefix="/login",
     tags=["login"],
-    responses={404: {"description": "User not found"}},
+    responses={404: {"description": "Employee not found"}},
 )
 
 

@@ -29,7 +29,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.database.models.employee import SQLModel as employee_model
+from app.database.models.employee_model import SQLModel as employee_model
+from app.database.models.vacation_request_model import SQLModel as vacation_request_model
 target_metadata = [employee_model.metadata]
 
 # other values from the config, defined by the needs of env.py,
