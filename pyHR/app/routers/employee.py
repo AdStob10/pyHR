@@ -1,10 +1,12 @@
 from typing import Annotated
 from fastapi import APIRouter, Query
-
+from loguru import logger
 
 from app.database.db import SessionDep
-from app.database.models.employee_model import Employee
-from app.security.security import TokenDep
+from app.database.models.employee_model import Employee, EmployeePublic
+from app.dependencies.deps import BaseListParams, FilterParamsDep, Response
+from app.security.security import TokenDep, CurrentUserByRole, CurrentUser, ManagerUser
+from app.services.user_service import UserService, UserServiceDep
 
 router = APIRouter(
     prefix="/employee",
@@ -14,14 +16,17 @@ router = APIRouter(
 
 
 
-@router.get("/token")
-def token(user_token: TokenDep):
-    return {"token": user_token}
+@router.get("/manager")
+def get_user_manager(
+        user: CurrentUser,
+        user_service: UserServiceDep
+) -> EmployeePublic:
+    return user_service.get_user_manager(user).get_model()
 
 @router.get("/all")
-def get_employees(session: SessionDep,
-                  offset: int = 0,
-                  limit: Annotated[int, Query(le=100)] = 100
-                  ) -> list[Employee]:
-    employees = session.query(Employee).offset(offset).limit(limit).all()
-    return employees
+def get_employees(
+        filer_query: FilterParamsDep,
+        user_service: UserServiceDep,
+        user: ManagerUser,
+) -> list[EmployeePublic]:
+    return user_service.get_user_all_subordinates(user, **filer_query.model_dump())

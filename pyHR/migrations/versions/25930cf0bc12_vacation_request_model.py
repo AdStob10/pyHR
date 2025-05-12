@@ -41,7 +41,7 @@ def upgrade() -> None:
     sa.Column('start_date', sa.Date(), nullable=False),
     sa.Column('end_date', sa.Date(), nullable=False),
     sa.Column('reason', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('status', sa.Enum('NEW', 'ACCEPTED', 'REJECTED', name='vacation_request_status'), nullable=False),
+    sa.Column('status', sa.Enum('NEW', 'ACCEPTED', 'REJECTED', name='vacationrequeststatus'), nullable=False),
     sa.Column('vacation_type_id', sa.Integer(), nullable=False),
     sa.Column('employee_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['employee_id'], ['employee.id'], ondelete='CASCADE'),

@@ -15,7 +15,7 @@ from starlette import status
 
 from loguru import logger
 
-from app.database.models.employee_model import User
+from app.database.models.employee_model import User, EmployeeRole
 from app.services.user_service import UserService
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login/access-token')
@@ -89,6 +89,23 @@ async def get_current_user(
     return user
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+class CurrentUserByRole:
+    def __init__(self, role: EmployeeRole):
+        self.role = role
+
+    def __call__(self, user: CurrentUser):
+        if user.role is None or user.role != self.role:
+            role_exception = HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"This action is only available for {self.role.name} role",
+            )
+            logger.warning("User = {} tried illegal action", user)
+            raise role_exception
+        return user
+
+manage_role_checker = CurrentUserByRole(EmployeeRole.MANAGER)
+ManagerUser = Annotated[User, Depends(manage_role_checker)]
 
 
 def get_password_hash(password: str) -> str:

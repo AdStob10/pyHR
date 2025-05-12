@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Relationship
 
 if TYPE_CHECKING:
-    from .employee_model import Employee
+    from .employee_model import Employee, EmployeePublic
 
 
 class VacationTypeBase(SQLModel):
@@ -36,7 +36,7 @@ class EmployeeAvailableDaysPublic(EmployeeVacationTypeAvailableDaysBase):
      vacation_type: VacationTypeBase
 
 
-class VacationRequestStatus(enum.Enum):
+class VacationRequestStatus(int, enum.Enum):
     NEW = 0
     ACCEPTED = 1
     REJECTED = 2
@@ -54,7 +54,10 @@ class VacationRequest(SQLModel, table=True):
     vacation_type: VacationType = Relationship(back_populates="vacation_requests")
 
     employee_id: int = Field(foreign_key='employee.id', ondelete='CASCADE')
-    employee: "Employee" = Relationship(back_populates="vacation_requests")
+    employee: "Employee" = Relationship(back_populates="vacation_requests", sa_relationship_kwargs={"foreign_keys": "VacationRequest.employee_id"})
+
+    manager_id: int = Field(foreign_key='employee.id', ondelete='SET NULL', nullable=True)
+    manager: "Employee" = Relationship(back_populates="employees_requests", sa_relationship_kwargs={"foreign_keys": "VacationRequest.manager_id"})
 
     def __repr__(self):
         return f"""<VacationRequest {self.id}, 
@@ -70,7 +73,11 @@ class VacationRequestPublic(BaseModel):
     start_date: date
     end_date: date
     reason: str | None
+    vacation_type: VacationType
     status: VacationRequestStatus
+
+class SubordinateRequestPublic(VacationRequestPublic):
+    employee: "EmployeePublic"
 
 class VacationRequestCreate(SQLModel):
     start_date: date
