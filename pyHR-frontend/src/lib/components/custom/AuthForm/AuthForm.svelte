@@ -29,16 +29,20 @@
             </div>
         {/if}
         <Form.Field {form} name="username">
-            <Form.Control let:attrs>
+            <Form.Control >
+            {#snippet children({ props })}
                 <Form.Label >Nazwa użytkownika</Form.Label>
-                <Input {...attrs} bind:value={$formData.username}/>
+                <Input {...props} bind:value={$formData.username}/>
+             {/snippet}
             </Form.Control>
             <Form.FieldErrors />
         </Form.Field>
         <Form.Field {form} name="password">
-            <Form.Control let:attrs>
+            <Form.Control>
+            {#snippet children({ props })}
                 <Form.Label>Hasło</Form.Label>
-                <Input {...attrs} bind:value={$formData.password}/>
+                <Input type="password" {...props} bind:value={$formData.password}/>
+            {/snippet}
             </Form.Control>
             <Form.FieldErrors />
         </Form.Field>

@@ -8,7 +8,7 @@
         </div>
         <nav class="grid gap-6 text-lg font-medium">
             <a
-            href="##"
+            href="/requests"
             class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5"
         >
             <Files class="h-5 w-5"/>

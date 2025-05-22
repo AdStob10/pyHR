@@ -15,6 +15,7 @@ export const handle : Handle = async ({ event , resolve })  => {
 
 export const handleFetch: HandleFetch = async({event, request, fetch}) => {
 	if (request.url.startsWith(API_URL)) {
+		request.headers.set("Accept-Language", "pl")
 		const authCookie = event.cookies.get(COOKIE_AUTH_NAME);
 		if (authCookie) {
 			request.headers.set('Authorization', `Bearer ${authCookie}`)
