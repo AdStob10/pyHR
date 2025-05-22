@@ -6,8 +6,8 @@ from app.dependencies.deps import BaseListParams
 
 
 
-def apply_filters_and_sort(stmt: Select | SelectOfScalar, params: BaseListParams):
+def apply_filters_and_sort(stmt: Select | SelectOfScalar, params: BaseListParams, default_sort: str | None):
     stmt = FilterTransfomer(params, stmt).transform_filters()
-    stmt = OrderByTransfomer(params, stmt).transform_orders_by()
+    stmt = OrderByTransfomer(params, stmt, default_sort).transform_orders_by()
     return stmt
 

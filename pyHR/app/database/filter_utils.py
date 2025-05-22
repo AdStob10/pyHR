@@ -83,3 +83,5 @@ class FilterTransfomer(Generic[T]):
                 self.stmt = self.stmt.where(col < value)
             case "gt":
                 self.stmt = self.stmt.where(col > value)
+            case "eq":
+                self.stmt = self.stmt.where(col == value)

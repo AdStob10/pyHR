@@ -2,8 +2,10 @@ import enum
 from datetime import date
 from typing import Optional, TYPE_CHECKING
 
-from pydantic import BaseModel
+
 from sqlmodel import SQLModel, Field, Relationship
+
+from ..model_utils import CamelSQLModel
 
 if TYPE_CHECKING:
     from .employee_model import Employee, EmployeePublic
@@ -22,7 +24,7 @@ class VacationType(VacationTypeBase, table=True):
 
 
 
-class EmployeeVacationTypeAvailableDaysBase(SQLModel):
+class EmployeeVacationTypeAvailableDaysBase(CamelSQLModel):
     employee_id: int = Field(foreign_key="employee.id", primary_key=True)
     vacation_type_id: int = Field(foreign_key="vacation_type.id", primary_key=True)
     available_days: int = Field(default=0)
@@ -68,7 +70,7 @@ class VacationRequest(SQLModel, table=True):
 
 
 
-class VacationRequestPublic(BaseModel):
+class VacationRequestPublic(CamelSQLModel):
     id: int
     start_date: date
     end_date: date
@@ -79,9 +81,9 @@ class VacationRequestPublic(BaseModel):
 class SubordinateRequestPublic(VacationRequestPublic):
     employee: "EmployeePublic"
 
-class VacationRequestCreate(SQLModel):
-    start_date: date
+class VacationRequestCreate(CamelSQLModel):
+    start_date: date = Field()
     end_date: date
-    reason: str | None
+    reason: str | None = None
     status: VacationRequestStatus | None = Field(default=VacationRequestStatus.NEW)
     vacation_type_id: int

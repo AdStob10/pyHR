@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from loguru import logger
 
-from migrations.versions.aa1726d9c0fc_seed_basic_vacation_request_types import available_employee_days
+from ..database.model_utils import PaginatedList
 from ..database.models.employee_model import User
 from ..database.models.vacation_request_model import VacationRequestPublic, VacationRequestCreate, VacationRequest, \
     EmployeeAvailableDaysPublic, EmployeeVacationTypeAvailableDays, VacationRequestStatus
@@ -24,8 +24,16 @@ class VacationService:
         self.vacation_repository = vacation_repository
         self.user_repository = user_repository
 
-    def get_user_vacation_requests(self, employee: User, filter_params: VacationRequestListParams) -> list[VacationRequestPublic]:
+
+    def get_user_vacation_requests(self, employee: User, filter_params: VacationRequestListParams) -> PaginatedList[VacationRequestPublic]:
         return self.vacation_repository.get_employee_requests(employee.id, filter_params)
+
+    def get_user_request(self, employee: User, vacation_id: int) -> Response[VacationRequestPublic]:
+        vacation_request = self.vacation_repository.get_employee_request(employee.id, vacation_id)
+        if not vacation_request:
+            return NotFound(message=_("Not found vacation request for employee"))
+
+        return Response(data=vacation_request)
 
     def get_subordinates_requests(self, manager: User, offset: int, limit: int) -> list[VacationRequestPublic]:
         return self.vacation_repository.get_subordinates_requests(manager.id, offset, limit)
@@ -40,10 +48,18 @@ class VacationService:
 
         return Response(data=available_days)
 
+
+
+    def get_available_vacation_types(self):
+        return self.vacation_repository.get_available_vacation_types()
+
     @logger.catch(level='ERROR')
     def add_new_vacation_request(self, employee: User, vacation_request: VacationRequestCreate) -> Response[VacationRequest]:
         employee_available_vac = self.vacation_repository.get_employee_available_days(employee.id, vacation_request.vacation_type_id)
         manager = self.user_repository.get_user_manager(employee.id)
+        if manager is None:
+            logger.warning("Not found manager for user {}", employee)
+            return NotFound(message=_("Not found manager for user {}"))
 
         vacation_request_entity = VacationRequest(**vacation_request.model_dump())
         vacation_request_entity.employee_id = employee.id
@@ -59,10 +75,19 @@ class VacationService:
             return BadRequest(message=_("Date range is in the past"))
 
         vacation_range = vacation_request_entity.end_date - vacation_request_entity.start_date
-        if vacation_range.days <= 0:
+        vacation_duration = vacation_range.days
+
+        # if start date is equal to end date then we have one day vacation
+        if vacation_duration == 0:
+            vacation_duration = 1
+        # otherwise we have to add one day (count start date as first day of vacation)
+        else:
+            vacation_duration += 1
+
+        if vacation_duration < 0:
             return BadRequest(message=_("Invalid date range"))
 
-        if employee_available_vac.available_days < vacation_range.days:
+        if employee_available_vac.available_days < vacation_duration:
             msg = _("Available days limit exceeded. Available days:")
             return BadRequest(message=f"{msg} {employee_available_vac.available_days}")
 
@@ -75,7 +100,7 @@ class VacationService:
 
 
         logger.info("Add new vacation request {}", vacation_request_entity)
-        employee_available_vac.available_days -= vacation_range.days
+        employee_available_vac.available_days -= vacation_duration
         vacation_request_entity = self.vacation_repository.save_vacation_request_and_avail_days(vacation_request_entity, employee_available_vac)
 
         return Response(data=vacation_request_entity)

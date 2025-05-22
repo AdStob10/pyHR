@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-30 12:58+0200\n"
+"POT-Creation-Date: 2025-05-21 15:46+0200\n"
 "PO-Revision-Date: 2025-04-30 12:59+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,19 +19,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: services/vacation_service.py:40
+#: services/user_service.py:28
+msgid "Manager not found"
+msgstr "Nie znaleziono menadżera"
+
+#: services/vacation_service.py:39 services/vacation_service.py:60
 msgid "Not found available days for employee"
-msgstr ""
-
-#: services/vacation_service.py:45
-msgid "Date range is in the past"
-msgstr ""
-
-#: services/vacation_service.py:49
-msgid "Invalid date range"
-msgstr ""
+msgstr "Nie znaleziono dostępnych dni dla pracownika"
 
 #: services/vacation_service.py:52
-msgid "Available days limit exceeded. Available days: "
-msgstr ""
+#, python-brace-format
+msgid "Not found manager for user {}"
+msgstr "Nie znaleziono menadżera dla pracownika"
+
+#: services/vacation_service.py:65
+msgid "Date range is in the past"
+msgstr "Zakres dat jest w przeszłości"
+
+#: services/vacation_service.py:69
+msgid "Invalid date range"
+msgstr "Nieprawidłowy zakres dat"
+
+#: services/vacation_service.py:72
+msgid "Available days limit exceeded. Available days:"
+msgstr "Przekroczono limit dni. Dostępna ilość dni"
+
+#: services/vacation_service.py:80
+msgid "You already have vacation in selected period"
+msgstr "Masz już urlop w wybranym okresie"
+
+#: services/vacation_service.py:96
+msgid "Not found vacation request"
+msgstr "Nie znaleziono wniosku urlopowego"
+
+#: services/vacation_service.py:99
+msgid "Vacation request already has status"
+msgstr "Wniosek urlopowy posiada już ten status"
+
+#: services/vacation_service.py:105
+msgid "Vacation request is rejected. You cannot change it status"
+msgstr "Wniosek urlopowy jest odrzucony. Nie może zmienić jego statusu"
+
+#~ msgid "Available days limit exceeded. Available days: "
+#~ msgstr ""
 

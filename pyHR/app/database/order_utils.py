@@ -11,18 +11,23 @@ from app.dependencies.query_params import SortType
 T = TypeVar('T', bound=BaseListParams)
 
 class OrderByTransfomer(Generic[T]):
-    def __init__(self, filter_params: T, stmt: Select | SelectOfScalar):
+    def __init__(self, filter_params: T, stmt: Select | SelectOfScalar, default_sort_col: str | None):
         self.filters = filter_params
         self.stmt = stmt
         self.cols = stmt.selected_columns
+        self.default_sort_col = default_sort_col
 
     def transform_orders_by(self) -> Select | SelectOfScalar:
         model_dumped = self.filters.model_dump()
-        order_params = {k: v for k, v in model_dumped.items() if k.startswith('sort')}
+        order_params = {k: v for k, v in model_dumped.items() if k.startswith('sort') and v is not None}
+
+        print(f"params_sort = {order_params}")
+        if len(order_params) == 0 and self.default_sort_col:
+            col: ColumnElement = self.cols[self.default_sort_col]
+            self.stmt = self.stmt.order_by(col)
+            return self.stmt
 
         for k, v in order_params.items():
-            if v is None or k in ["offset", "limit"]:
-                continue
             #print(f"Order param: {k}: {v}")
             self._transform_single_order_by(k, v)
 

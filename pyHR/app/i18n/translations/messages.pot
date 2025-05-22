@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-30 12:58+0200\n"
+"POT-Creation-Date: 2025-05-21 15:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: services/vacation_service.py:40
+#: services/user_service.py:28
+msgid "Manager not found"
+msgstr ""
+
+#: services/vacation_service.py:39 services/vacation_service.py:60
 msgid "Not found available days for employee"
 msgstr ""
 
-#: services/vacation_service.py:45
+#: services/vacation_service.py:52
+#, python-brace-format
+msgid "Not found manager for user {}"
+msgstr ""
+
+#: services/vacation_service.py:65
 msgid "Date range is in the past"
 msgstr ""
 
-#: services/vacation_service.py:49
+#: services/vacation_service.py:69
 msgid "Invalid date range"
 msgstr ""
 
-#: services/vacation_service.py:52
-msgid "Available days limit exceeded. Available days: "
+#: services/vacation_service.py:72
+msgid "Available days limit exceeded. Available days:"
+msgstr ""
+
+#: services/vacation_service.py:80
+msgid "You already have vacation in selected period"
+msgstr ""
+
+#: services/vacation_service.py:96
+msgid "Not found vacation request"
+msgstr ""
+
+#: services/vacation_service.py:99
+msgid "Vacation request already has status"
+msgstr ""
+
+#: services/vacation_service.py:105
+msgid "Vacation request is rejected. You cannot change it status"
 msgstr ""
 
