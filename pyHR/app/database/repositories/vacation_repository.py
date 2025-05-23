@@ -7,10 +7,12 @@ from .base_repository import BaseRepository
 from ..db import SessionDep
 from ..filter_utils import FilterTransfomer
 from ..model_utils import PaginatedList
+from ..models.employee_model import Employee
+from ..models.subordinate_request_model import SubordinateRequestPublic
 from ..models.vacation_request_model import VacationRequest, VacationRequestPublic, EmployeeVacationTypeAvailableDays, \
-    EmployeeAvailableDaysPublic, SubordinateRequestPublic, VacationRequestStatus, VacationType
+    EmployeeAvailableDaysPublic, VacationRequestStatus, VacationType
 from ..utils import apply_filters_and_sort
-from ...dependencies.query_params import VacationRequestListParams
+from ...dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 
 
 class VacationRepository(BaseRepository):
@@ -31,20 +33,45 @@ class VacationRepository(BaseRepository):
 
         return PaginatedList[VacationRequestPublic](data=data, row_count=row_count)
 
-    def get_employee_request(self, employee_id: int, vacation_id: int) -> VacationRequestPublic:
+    def get_employee_request_by_id(self, employee_id: int, vacation_id: int) -> VacationRequestPublic:
         stmt = (select(VacationRequest)
                 .where(VacationRequest.employee_id == employee_id)
                 .where(VacationRequest.id == vacation_id)
+                .options(joinedload(VacationRequest.vacation_type, innerjoin=True),
+                         joinedload(VacationRequest.employee, innerjoin=True))
                 )
 
         return self.session.exec(stmt).first()
 
-    def get_subordinates_requests(self, manager_id: int, offset: int, limit: int) -> list[SubordinateRequestPublic]:
+    def get_subordinates_requests(self, manager_id: int, filter_params: SubordinateRequestListParams) -> PaginatedList[SubordinateRequestPublic]:
+        stmt = (select(VacationRequest)
+                .join(VacationRequest.employee)
+                .add_columns(Employee)
+                .options(joinedload(VacationRequest.vacation_type, innerjoin=True),
+                                      joinedload(VacationRequest.employee, innerjoin=True)))
+        filtered_and_sorted_stmt = (apply_filters_and_sort(stmt, filter_params, "id")
+                                    .where(VacationRequest.manager_id == manager_id))
+
+        cnt_stmt = select(func.count()).select_from(filtered_and_sorted_stmt)
+        row_count = self.session.exec(cnt_stmt).first()
+
+        stmt = (filtered_and_sorted_stmt
+                .offset(filter_params.offset)
+                .limit(filter_params.limit))
+
+        data = self.session.exec(stmt).all()
+        return PaginatedList[SubordinateRequestPublic](data=data, row_count=row_count)
+
+    def get_subordinate_request_by_id(self, manager_id: int, vacation_id: int) -> SubordinateRequestPublic:
         stmt = (select(VacationRequest)
                 .where(VacationRequest.manager_id == manager_id)
-                .offset(offset)
-                .limit(limit).options(joinedload(VacationRequest.vacation_type, VacationRequest.employee, innerjoin=True)))
-        return self.session.exec(stmt).all()
+                .where(VacationRequest.id == vacation_id)
+                .options(joinedload(VacationRequest.vacation_type, innerjoin=True),
+                         joinedload(VacationRequest.employee, innerjoin=True)))
+
+
+        return self.session.exec(stmt).first()
+
 
     def get_employee_all_available_days(self, employee_id: int, offset: int, limit: int) -> list[EmployeeAvailableDaysPublic]:
         stmt = (select(EmployeeVacationTypeAvailableDays)
@@ -61,7 +88,7 @@ class VacationRepository(BaseRepository):
         return self.session.exec(stmt).first()
 
     def get_vacation_request_by_id(self, vacation_id: int) -> VacationRequest:
-        return self.session.get(VacationRequest, id=vacation_id)
+        return self.session.get(VacationRequest, vacation_id)
 
     def get_available_vacation_types(self):
         stmt = select(VacationType)

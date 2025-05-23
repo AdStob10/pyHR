@@ -3,10 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Path, Query
 
 from ..database.model_utils import PaginatedList
+from ..database.models.subordinate_request_model import SubordinateRequestPublic
 from ..database.models.vacation_request_model import VacationRequestPublic, VacationRequestCreate, \
     EmployeeAvailableDaysPublic, VacationRequestStatus, VacationTypeBase
 from ..dependencies.deps import FilterParamsDep, Response
-from ..dependencies.query_params import VacationRequestListParams
+from ..dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 from ..security.security import CurrentUser, ManagerUser
 from ..services.vacation_service import VacationServiceDep
 
@@ -32,16 +33,24 @@ async def get_user_request_by_id(
     user: CurrentUser,
     vacation_service: VacationServiceDep
 ) -> VacationRequestPublic:
-    return vacation_service.get_user_request(user, vacation_id).get_model()
+    return vacation_service.get_user_request_by_id(user, vacation_id).get_model()
 
 
 @router.get("/employees")
 async def get_subordinates_vacation_requests(
-    filter_query: FilterParamsDep,
+    get_subordinates_vacations_query: Annotated[SubordinateRequestListParams, Query()],
     user: ManagerUser,
     vacation_service: VacationServiceDep
-) -> list[VacationRequestPublic]:
-    return vacation_service.get_subordinates_requests(user, **filter_query.model_dump())
+) -> PaginatedList[SubordinateRequestPublic]:
+    return vacation_service.get_subordinates_requests(user, get_subordinates_vacations_query)
+
+@router.get("/employees/{vacation_id}", response_model=SubordinateRequestPublic)
+async def get_subordinate_request_by_id(
+    vacation_id: Annotated[int, Path(title="Vacation Id", ge=1)],
+    user: ManagerUser,
+    vacation_service: VacationServiceDep
+) -> VacationRequestPublic:
+    return vacation_service.get_subordinate_request_by_id(user, vacation_id).get_model()
 
 
 

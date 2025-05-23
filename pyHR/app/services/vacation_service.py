@@ -6,12 +6,13 @@ from loguru import logger
 
 from ..database.model_utils import PaginatedList
 from ..database.models.employee_model import User
+from ..database.models.subordinate_request_model import SubordinateRequestPublic
 from ..database.models.vacation_request_model import VacationRequestPublic, VacationRequestCreate, VacationRequest, \
     EmployeeAvailableDaysPublic, EmployeeVacationTypeAvailableDays, VacationRequestStatus
 from ..database.repositories.user_repository import UserRepository
 from ..database.repositories.vacation_repository import VacationRepository
 from ..dependencies.deps import Response, NotFound, BadRequest
-from ..dependencies.query_params import VacationRequestListParams
+from ..dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 from ..i18n import _
 
 
@@ -28,15 +29,24 @@ class VacationService:
     def get_user_vacation_requests(self, employee: User, filter_params: VacationRequestListParams) -> PaginatedList[VacationRequestPublic]:
         return self.vacation_repository.get_employee_requests(employee.id, filter_params)
 
-    def get_user_request(self, employee: User, vacation_id: int) -> Response[VacationRequestPublic]:
-        vacation_request = self.vacation_repository.get_employee_request(employee.id, vacation_id)
+    def get_user_request_by_id(self, employee: User, vacation_id: int) -> Response[VacationRequestPublic]:
+        vacation_request = self.vacation_repository.get_employee_request_by_id(employee.id, vacation_id)
         if not vacation_request:
-            return NotFound(message=_("Not found vacation request for employee"))
+            msg = _("Not found vacation request for employee")
+            return NotFound(message=f"{msg} (vacation_id = {vacation_id})")
 
         return Response(data=vacation_request)
 
-    def get_subordinates_requests(self, manager: User, offset: int, limit: int) -> list[VacationRequestPublic]:
-        return self.vacation_repository.get_subordinates_requests(manager.id, offset, limit)
+    def get_subordinates_requests(self, manager: User, filter_params: SubordinateRequestListParams) -> PaginatedList[SubordinateRequestPublic]:
+        return self.vacation_repository.get_subordinates_requests(manager.id, filter_params)
+
+    def get_subordinate_request_by_id(self, manager: User, vacation_id: int) -> Response[SubordinateRequestPublic]:
+        vacation_request = self.vacation_repository.get_subordinate_request_by_id(manager.id, vacation_id)
+        if not vacation_request:
+            msg = _("Not found subordinate vacation request for employee")
+            return NotFound(message=f"{msg} (vacation_id = {vacation_id})")
+
+        return Response(data=vacation_request)
 
     def get_user_all_available_days(self, employee: User, offset: int, limit: int) -> list[EmployeeAvailableDaysPublic]:
         return self.vacation_repository.get_employee_all_available_days(employee.id, offset, limit)

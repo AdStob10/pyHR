@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, Integer
 from sqlmodel import Field, SQLModel, Relationship
 
+from app.database.model_utils import CamelSQLModel, CamelBaseModel
 from app.database.models.vacation_request_model import EmployeeVacationTypeAvailableDays
 
 if TYPE_CHECKING:
@@ -21,6 +22,8 @@ class User(SQLModel):
     id: int = Field(primary_key=True)
     username: str = Field(index=True)
     password: str = Field()
+    first_name: str = Field(max_length=150)
+    last_name: str = Field(max_length=150)
     role: EmployeeRole = Field(nullable=True, default=0)
     email: Optional[str] = Field(max_length=150)
 
@@ -29,19 +32,20 @@ class User(SQLModel):
         return f"<User id:{self.id}, username:{self.username}>"
 
     def __str__(self):
-        return f"<User id:{self.id}, username:{self.username}>"
+        return f"<User id:{self.id}, username:{self.username}, role:{self.role}>"
 
 
-class UserPublic(BaseModel):
+class UserPublic(CamelBaseModel):
     id: int
     username: str
+    first_name: str
+    last_name: str
+    role: EmployeeRole
     email: Optional[str]
 
 
 class Employee(User, table=True):
     id: int = Field(sa_column=Column(Integer, primary_key=True))
-    first_name: str = Field(max_length=150)
-    last_name: str = Field(max_length=150)
     employment_date: datetime
 
 
@@ -56,10 +60,9 @@ class Employee(User, table=True):
     employees_requests: list["VacationRequest"] = Relationship(back_populates="manager", sa_relationship_kwargs={"foreign_keys": "VacationRequest.manager_id"})
 
 
-class EmployeePublic(SQLModel):
+class EmployeePublic(CamelSQLModel):
     id: int
     first_name: str
     last_name: str
     employment_date: datetime
-
 

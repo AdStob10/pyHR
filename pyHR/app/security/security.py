@@ -54,7 +54,7 @@ def authenticate(
     if not verify_password(password, user.password):
         return None
 
-    logger.info("Successfully authenticated user {}", user.username)
+    logger.info("Successfully authenticated user {}", user)
     return user
 
 

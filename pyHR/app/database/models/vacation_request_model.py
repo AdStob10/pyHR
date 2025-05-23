@@ -78,9 +78,6 @@ class VacationRequestPublic(CamelSQLModel):
     vacation_type: VacationType
     status: VacationRequestStatus
 
-class SubordinateRequestPublic(VacationRequestPublic):
-    employee: "EmployeePublic"
-
 class VacationRequestCreate(CamelSQLModel):
     start_date: date = Field()
     end_date: date
