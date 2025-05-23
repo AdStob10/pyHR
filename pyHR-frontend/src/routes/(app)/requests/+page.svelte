@@ -18,6 +18,7 @@
 	import { ChevronsUpDownIcon } from "@lucide/svelte";
 	import AddRequestForm from "$lib/components/custom/Forms/AddRequestForm.svelte";
 	import { goto } from "$app/navigation";
+	import { Separator } from "$lib/components/ui/separator";
 
 
 
@@ -229,7 +230,8 @@
 
 </script>
 
-<h4>Wnioski urlopowe</h4>
+<h1 class="text-lg">Wnioski urlopwe</h1>
+<Separator />
 
 <!-- {#await data.vacations} 
    <div class="flex justify-center align-middle mx-0"> <LoaderCircle class="h-10 w-10 animate-spin" /> </div>
@@ -276,7 +278,7 @@
 		/>
 		<div class="flex gap-3">
 			<Button variant="outline" class="w-[5rem] border-primary" onclick={async () => await queryData()}>Filtruj</Button>
-			<Button variant="outline" class="w-[5rem] hover:bg-red-500 border-red-500" onclick={async () => await resetFilters()}>Wyczyść</Button>
+			<Button variant="secondary" class="w-[5rem] bg-red-800 hover:bg-red-900" onclick={async () => await resetFilters()}>Wyczyść</Button>
 		</div>
 	</div>
 	{/if}

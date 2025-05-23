@@ -39,8 +39,10 @@ export const actions: Actions = {
         if (res.status === 401) {
             return message(form, {status: "error", text:"Niepoprawny login lub hasło"}, {status: 401})
         }
-
+        
+        console.log(res)
         const tokenData: TokenData = await res.json();
+      
         const decoded = jwtDecode<JwtPayload>(tokenData.access_token);
         if (!decoded.exp) {
             throw new Error("Missing expiring information in token");

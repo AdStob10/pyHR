@@ -1,12 +1,12 @@
 <script lang="ts">
 	import * as Breadcrumb  from "$lib/components/ui/breadcrumb";
-	import type { UserData } from "$lib/types";
+	import type { UserData, UserWithRole } from "$lib/types";
 	import { LoaderCircle, User } from "@lucide/svelte";
-    import { page } from "$app/state";
+  import { page } from "$app/state";
 
 
-    let { user } : { user : Promise<UserData> } = $props();
-    console.log(page.url.pathname)
+  let { user } : { user : UserWithRole } = $props();
+  console.log(page.url.pathname)
 </script>
 
 <Breadcrumb.Root class="hidden md:flex">
@@ -25,10 +25,10 @@
     </Breadcrumb.List>
   </Breadcrumb.Root>
 <div class="ml-auto md:grow-0 flex items-center gap-1 text-lg">
-    {#await user}
+    <!-- {#await user}
         <LoaderCircle class="h-10 w-10 animate-spin" />
-    {:then user}
+    {:then user} -->
     <User size={28}/> 
-    <h4>{user.username}</h4>
-    {/await}
+    <h4>{`${user.firstName} ${user.lastName}`}</h4>
+    <!-- {/await} -->
 </div>

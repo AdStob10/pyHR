@@ -5,10 +5,13 @@
 	import { parseDate } from "@internationalized/date";
 	import type { PageProps } from "./$types";
 	import { LoaderCircle } from "@lucide/svelte";
+	import { Button } from "$lib/components/ui/button";
+	import { invalidate } from "$app/navigation";
 
 
     let { data }: PageProps = $props()
     const {vacation} = data
+
 
 
 </script>
@@ -38,18 +41,24 @@
         <p class="text-muted-foreground text-sm">{getVacationDuration(data.startDate, data.endDate)}</p>
       </div>
       <div class="space-y-2">
+        <p class="text-sm font-medium leading-none">Rodzaj urlopu</p>
+        <p class="text-muted-foreground text-sm">{data.vacationType.name}</p>
+      </div>
+      <div class="space-y-2">
         <p class="text-sm font-medium leading-none">Status</p>
         <div class="flex items-center">
           <Icon class="mr-2 h-2 w-2" />
           <span class="text-muted-foreground text-sm">{vacationStatuses.find(vs => vs.id == data.status)?.name}</span>
         </div>
+      </div>
       {#if data.reason}
        <div class="space-y-2">
         <p class="text-sm font-medium leading-none">Powód</p>
         <p class="text-muted-foreground text-sm">{data.reason}</p>
       </div>
       {/if}
-    </div>
+  
+  </div>
   </Card.Content>
   <Card.Footer>
   </Card.Footer>

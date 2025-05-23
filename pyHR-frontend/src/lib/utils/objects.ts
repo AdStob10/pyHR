@@ -3,6 +3,9 @@ import { Circle, CircleCheckBig, CircleOff,  } from "@lucide/svelte";
 import type { Component } from "svelte";
 import type { Infer } from "sveltekit-superforms";
 
+
+/********* Statuses utils *********/
+
 export type VacationStatus = {
     id: number,
     name: string,
@@ -28,13 +31,40 @@ export const vacationStatuses: VacationStatus[] = [
 ]
 
 
-
-
 export const statutesAsOptions = () => {
     return vacationStatuses.map(status => ({label: status.name, value: status.id, icon: status.icon}))
 } 
 
+/********* Role utils *********/
 
+export type Role = {
+    id: number,
+    name: string,
+    label: string,
+}
+
+
+export const availableRoles: Role[] = [
+    {
+        id: 0,
+        name: "BASIC_EMPLOYEE",
+        label: "Pracownik"
+    },
+    {
+        id: 1,
+        name: "MANAGER",
+        label: "Kierownik",    
+    },
+    {
+        id: 3,
+        name: "ADMIM",
+        label: "Administrator"
+    }
+]
+
+
+
+/********* Request utils *********/
 
 
 export const flattenVacationRequest = (obj: Infer<AddRequestSchema>) => ({
@@ -54,5 +84,5 @@ export const getVacationDuration = (start: string, end: string) => {
     const diffInDays = Math.round(diffInMilliseconds / oneDay);
     
     if (diffInDays == 0) return 1
-    return diffInDays + 2
+    return diffInDays + 1
 }

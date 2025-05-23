@@ -1,3 +1,5 @@
+import type { Role } from "$lib/utils/objects"
+
 type PaginatedList<T> = {
     data: T[],
     rowCount: number
@@ -12,9 +14,15 @@ type TokenData = {
 type UserData = {
     id: number,
     username: string,
+    firstName: string,
+    lastName: string,
+    role: number,
     email: string | undefined
 }
 
+type UserWithRole = Omit<UserData, 'role'> & {
+    role: Role
+}
 
 type VacationRequest = {
     id: number,
@@ -32,6 +40,9 @@ type VacationType = {
 }
 
 
+type Employee = Omit<UserData, {role: number, email: string}> 
+
+
 
 type AvailableVacation = {
     employeeId: number,
@@ -40,5 +51,8 @@ type AvailableVacation = {
     vacationType: VacationType
 }
 
+type SubordinateVacationRequest = VacationRequest & {
+    employee: Employee
+}
 
-export type {PaginatedList, TokenData, UserData, VacationRequest, VacationType, AvailableVacation}
+export type {PaginatedList, TokenData, UserData, VacationRequest, VacationType, AvailableVacation, UserWithRole, SubordinateVacationRequest}
