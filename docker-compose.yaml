@@ -1,7 +1,23 @@
 services:
+  web:
+    container_name: pyhr_web
+    profiles: ["web","production"]
+    build: ./pyHR-frontend
+    environment:
+      NODE_ENV: production
+      ORIGIN: http://localhost:3000
+      NODE_OPTIONS: --max_old-space-size=2048
+      API_URL: "http://api:8000"
+    image: pyhr/web:latest
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
   api:
     container_name: pyhr_api
-    profiles: ["api"]
+    profiles: ["api", "backend","production"]
     build: ./pyHR
     entrypoint: uvicorn app.main:app --host 0.0.0.0 --reload
     volumes:
@@ -9,7 +25,9 @@ services:
     environment:
         DEBUG: 1
         WATCHFILES_FORCE_POLLING: true
-        DB_URL: "postgresql://pyhr_api:pyhr123@localhost/pyhr"
+        DB_URL: "postgresql://pyhr_api:pyhr123@db/pyhr"
+        SECRET_KEY: "70d02e9318abac8edd40892fa455edc4e888678a8efdbff2c6bdceaaa4bc7b27"
+        ACCESS_TOKEN_EXPIRE_MINUTES: 30
     image: pyhr/api:latest
     depends_on:
       - db
@@ -25,7 +43,7 @@ services:
   db:
     container_name: pyhr_db
     image: postgres
-    profiles: ["database"]
+    profiles: ["database", "backend","production"]
     restart: always
     ports:
       - "5432:5432"
@@ -40,7 +58,7 @@ services:
   pgadmin:
       container_name: pyhr_pgadmin
       image: dpage/pgadmin4:9.2.0
-      profiles: ["database"]
+      profiles: ["database", "backend", "production"]
       depends_on:
         - db
       ports:
