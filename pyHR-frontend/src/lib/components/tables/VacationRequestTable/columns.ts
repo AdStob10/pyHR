@@ -3,6 +3,7 @@ import type { VacationRequest } from "$lib/types";
 import type { ColumnDef } from "@tanstack/table-core";
 import StatusCell from "../utils/StatusCell/StatusCell.svelte";
 import SortHeader from "../utils/Sort/SortHeader.svelte";
+import { getVacationDuration } from "$lib/utils/objects";
 
 export const columns: ColumnDef<VacationRequest>[] = [
     {
@@ -37,6 +38,10 @@ export const columns: ColumnDef<VacationRequest>[] = [
                     onclick: column.getToggleSortingHandler()
                 })
         }
+    },
+    {
+        header:"Ilość dni",
+        accessorFn: row => getVacationDuration(row.startDate, row.endDate)
     },
     {
         accessorKey:"status",

@@ -22,22 +22,9 @@
 
 
 
-	/*
-
-	 url: string,
-    columns: ColumnDef<T>[],   
-    pageData: PaginatedList<T>,
-    initialFilters: Record<string, FilterItem>
-
-	*/
-
 	
     let {data} : PageProps = $props()
-	// let pagination = $state<PaginationState>({pageIndex: 0, pageSize: 2})
-	// let filters = $state<Record<string, FilterItem>>(initialFilters)
-	// let isLoading = $state(false)
 	let vacationTypesOptions = $derived(data.vacationTypes.map(t => ({label: t.name, value: t.id} as SelectOption)))
-	//const hook = useDataTable("requests", initialFilters)
 	const hook = useDataTableStore({url: "requests", initialFilters})
 
 	const {
@@ -52,102 +39,6 @@
 		updateFilterTypeByName,
 	} = hook
 
-	// const {
-	// 	getPagination,
-	// 	filters,
-	// 	isLoading,
-	// 	queryData,
-	// 	queryDataAfterPageChange,
-	// 	resetFilters,
-	// 	filterByName,
-	// 	updateFilterByName,
-	// 	updateFilterTypeByName,
-	// 	setPagination
-	// } = hook
-
-	// const queryData = async () => {
-	// 		let params = new URLSearchParams()
-	// 		params = setFiltersOnParams(filters, params)
-	// 		params.set("offset", "0")
-	// 		params.set("limit", pagination.pageSize.toString())
-	// 		pagination.pageIndex = 0
-	// 		pagination.pageSize = 2
-
-	// 		isLoading = true
-	// 		await goto("/requests?"+params, {replaceState: false, keepFocus: true, noScroll: true})
-	// 		isLoading = false
-	// 	}
-
-
-	// const queryDataAfterPageChange =  async () => {
-	// 		let params = new URLSearchParams()
-	// 		const offset = pagination.pageIndex * pagination.pageSize
-	// 		params.set("offset", offset.toString())
-	// 		params.set("limit", pagination.pageSize.toString())
-	// 		params = setFiltersOnParams(filters, params)
-			
-	// 		isLoading = true
-	// 		await goto("/requests?"+params, {replaceState: false, keepFocus: true, noScroll: true})
-	// 		isLoading = false
-	// 	}
-	
-
-	// const resetFilters = async () => {
-	// 		let params = new URLSearchParams()
-	// 		params.set("offset", "0")
-	// 		params.set("limit", pagination.pageSize.toString())
-	// 		pagination.pageIndex = 0
-	// 		pagination.pageSize = 2
-	// 		filters = initialFilters
-			
-	// 		isLoading = true
-	// 		await goto("/requests?"+params, {replaceState: false, keepFocus: true, noScroll: true})
-	// 		isLoading = false
-	// 	}
-
-
-
-	// const filterByName = (name: string) => {
-	// 	return filters[name]
-	// }
-
-	// const updateFilterByName = (name: string, value: any) => {
-	// 	const filter = filterByName(name)
-	// 	filter.value = value
-	// }
-
-	// const updateFilterTypeByName = (name: string, value: FilterType) => {
-	// 	const filter = filterByName(name)
-	// 	filter.type = value
-	// }
-
-
-	// const table = createSvelteTable({
-    //     get data() {
-    //         return data.vacations.data;
-    //     },
-    //     columns,
-    //     get rowCount() { 
-	// 		return data.vacations.rowCount
-	// 	},
-    //     state: {
-    //       get pagination() {
-    //         return pagination
-    //       }
-    //     },
-    //     manualPagination: true,
-	// 	manualFiltering: true,
-    //     onPaginationChange: async (updater) => {
-    //       if (typeof updater === "function") {
-    //         pagination = updater(pagination)
-    //       } else {
-    //         pagination = updater;
-    //       }
-
-    //       await queryDataAfterPageChange()
-    //     },
-    //     getCoreRowModel: getCoreRowModel(),
-    // });
 
 	const table = createSvelteTable({
         get data() {
@@ -182,7 +73,7 @@
           } else {
             sorting.set(updater);
           }
-		  console.log($sorting)
+			//   console.log($sorting)
 		  await queryDataAfterPageChange()
         },
         getCoreRowModel: getCoreRowModel(),
@@ -194,48 +85,14 @@
 	}
 
 
-	// const table = createSvelteTable({
-    //     get data() {
-    //         return data.vacations.data;
-    //     },
-    //     columns,
-    //     get rowCount() { 
-	// 		return data.vacations.rowCount
-	// 	},
-    //     state: {
-    //       get pagination() {
-    //         return getPagination()
-    //       }
-    //     },
-    //     manualPagination: true,
-	// 	manualFiltering: true,
-    //     onPaginationChange: async (updater) => {
-    //       if (typeof updater === "function") {
-    //         setPagination(updater(getPagination()))
-    //       } else {
-    //         setPagination(updater);
-    //       }
-
-    //       await queryDataAfterPageChange()
-    //     },
-    //     getCoreRowModel: getCoreRowModel(),
-    // });
-
-
-	//$inspect(pagination, "paginationState")
-	//$inspect($filters, "filters")	
-	//$inspect(data, "data")
-	$inspect(data.vacationTypes, "vacationTypes")
-	// $inspect(table.options.rowCount, "rowCount")	
+	// $inspect(data.vacationTypes, "vacationTypes")
 
 </script>
 
-<h1 class="text-lg">Wnioski urlopwe</h1>
+<h1 class="text-lg">Wnioski urlopowe</h1>
 <Separator />
 
-<!-- {#await data.vacations} 
-   <div class="flex justify-center align-middle mx-0"> <LoaderCircle class="h-10 w-10 animate-spin" /> </div>
-{:then resolved} -->
+
 <Collapsible.Root class="w-[180px]">
 	<div class="flex items-center space-x-4">
 		<h3 class="text-sm font-semibold">Filtry</h3>
@@ -289,5 +146,4 @@
 <div class="flex justify-end">
 	<AddRequestForm data={data.form} availableDays={data.availableDays} />
 </div>
-<!-- {/await} -->
 

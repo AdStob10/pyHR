@@ -22,7 +22,7 @@
   }
   let { table, columns, isLoading, onRowClick }: DataTableProps<TData> = $props()
   
-  $inspect(isLoading, "isLoading")
+  // $inspect(isLoading, "isLoading")
 </script>
 
 

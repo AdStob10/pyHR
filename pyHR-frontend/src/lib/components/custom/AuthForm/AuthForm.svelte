@@ -1,11 +1,11 @@
 <script lang="ts">
+    import { dev } from '$app/environment';
     import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-    import { Button } from '$lib/components/ui/button';
+    import { Input } from '$lib/components/ui/input';
+    import { LoaderCircle } from '@lucide/svelte';
     import SuperDebug, { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-	import { authFormSchema, type AuthFormSchema } from "./schema";
-	import { LoaderCircle } from '@lucide/svelte';
+    import { zodClient } from "sveltekit-superforms/adapters";
+    import { authFormSchema, type AuthFormSchema } from "./schema";
 
     let { data } : {data: SuperValidated<Infer<AuthFormSchema>>} = $props();
  
@@ -17,7 +17,7 @@
     const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<SuperDebug data={$formData} />
+<SuperDebug data={$formData} display={dev} />
 <form method="POST" use:enhance>
 <div class="grid gap-6 text-center">
         {#if $message}

@@ -13,7 +13,7 @@ export type CreateDataTableParams = {
 };
 
 export default function useDataTableStore({ url,  initialFilters }: CreateDataTableParams) {
-  const pagination = writable<PaginationState>({ pageIndex: 0, pageSize: 2 });
+  const pagination = writable<PaginationState>({ pageIndex: 0, pageSize: 5 });
   const sorting = writable<SortingState>([])
   const filters = writable<Record<string, FilterItem>>({ ...initialFilters });
   const isLoading = writable(false);
@@ -56,15 +56,13 @@ export default function useDataTableStore({ url,  initialFilters }: CreateDataTa
     params.set('limit', paginationVal.pageSize.toString());
 
     pagination.set({ ...paginationVal, pageIndex: 0 });
-    // const copy = structuredClone()
     filters.update((f) => {
-      // if (f["status"]) f["status"].value = initialFilters["status"].value;
       Object.keys(f).forEach(k => {
         f[k].value = undefined
       })
       return { ...f };
     });
-    console.log("Filtry cleared")
+    // console.log("Filtry cleared")
 
     isLoading.set(true);
     await goto(`/${url}?` + params, { replaceState: false, keepFocus: true, noScroll: true });

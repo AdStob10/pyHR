@@ -85,14 +85,14 @@
           } else {
             sorting.set(updater);
           }
-		  console.log($sorting)
+		//   console.log($sorting)
 		  await queryDataAfterPageChange()
         },
         getCoreRowModel: getCoreRowModel(),
     });
 
 
-    $inspect("data", subRequests)
+    // $inspect("data", subRequests)
 
 </script>
 

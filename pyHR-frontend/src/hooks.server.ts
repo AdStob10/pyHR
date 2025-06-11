@@ -1,6 +1,6 @@
 
 import { redirect, type Handle, type HandleFetch } from '@sveltejs/kit';
-import { API_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { COOKIE_AUTH_NAME } from '$lib';
 
 export const handle : Handle = async ({ event , resolve })  => {
@@ -14,7 +14,7 @@ export const handle : Handle = async ({ event , resolve })  => {
 }
 
 export const handleFetch: HandleFetch = async({event, request, fetch}) => {
-	if (request.url.startsWith(API_URL)) {
+	if (request.url.startsWith(env.API_URL)) {
 		request.headers.set("Accept-Language", "pl")
 		const authCookie = event.cookies.get(COOKIE_AUTH_NAME);
 		if (authCookie) {

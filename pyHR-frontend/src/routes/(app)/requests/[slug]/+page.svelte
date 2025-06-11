@@ -47,7 +47,7 @@
       <div class="space-y-2">
         <p class="text-sm font-medium leading-none">Status</p>
         <div class="flex items-center">
-          <Icon class="mr-2 h-2 w-2" />
+          <Icon class="mr-2 h-3 w-3" />
           <span class="text-muted-foreground text-sm">{vacationStatuses.find(vs => vs.id == data.status)?.name}</span>
         </div>
       </div>

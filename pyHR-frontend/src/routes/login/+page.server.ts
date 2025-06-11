@@ -1,4 +1,4 @@
-import { API_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { COOKIE_AUTH_NAME } from '$lib';
 import { authFormSchema, type AuthFormSchema } from '$lib/components/custom/AuthForm/schema';
 import type { TokenData } from "$lib/types";
@@ -31,7 +31,7 @@ export const actions: Actions = {
             });
         }
 
-        const res = await fetch(`${API_URL}/login/access-token`, {
+        const res = await fetch(`${env.API_URL}/login/access-token`, {
             method: "POST",
             body: formData
         })
@@ -40,7 +40,7 @@ export const actions: Actions = {
             return message(form, {status: "error", text:"Niepoprawny login lub hasło"}, {status: 401})
         }
         
-        console.log(res)
+        // console.log(res)
         const tokenData: TokenData = await res.json();
       
         const decoded = jwtDecode<JwtPayload>(tokenData.access_token);

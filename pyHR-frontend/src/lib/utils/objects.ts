@@ -15,17 +15,17 @@ export type VacationStatus = {
 export const vacationStatuses: VacationStatus[] = [
     {
         id: 0,
-        name: "Nowe",
+        name: "Nowy",
         icon: Circle
     },
     {
         id: 1,
-        name: "Zaakceptowane",
+        name: "Zaakceptowany",
         icon: CircleCheckBig
     },
     {
         id: 2,
-        name: "Odrzucone",
+        name: "Odrzucony",
         icon: CircleOff
     }
 ]

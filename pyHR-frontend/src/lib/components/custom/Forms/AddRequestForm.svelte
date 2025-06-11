@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { buttonVariants } from "$lib/components/ui/button/button.svelte";
-	import * as Dialog  from "$lib/components/ui/dialog";
-	import { cn } from "$lib/utils";
-    import * as Form from '$lib/components/ui/form';
-	import SuperDebug, { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
-    import { zodClient } from "sveltekit-superforms/adapters";
-	import { addRequestSchema, type AddRequestSchema } from "./schema";
-	import { Input } from "$lib/components/ui/input";
-	import { LoaderCircle } from "@lucide/svelte";
-	import RangeDatePicker from "$lib/components/utils/RangeDatePicker.svelte";
-	import SelectWrapper, { type SelectOption } from "../SelectWrapper/SelectWrapper.svelte";
+	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Form from '$lib/components/ui/form';
 	import { Textarea } from "$lib/components/ui/textarea";
+	import RangeDatePicker from "$lib/components/utils/RangeDatePicker.svelte";
 	import type { AvailableVacation } from "$lib/types";
+	import { cn } from "$lib/utils";
+	import { LoaderCircle } from "@lucide/svelte";
+	import SuperDebug, { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
+	import SelectWrapper, { type SelectOption } from "../SelectWrapper/SelectWrapper.svelte";
+	import { addRequestSchema, type AddRequestSchema } from "./schema";
+    import { dev } from '$app/environment';
 	
     type AddRequestFormProps = {
         data: SuperValidated<Infer<AddRequestSchema>>,
@@ -43,7 +43,7 @@
     <Dialog.Header>
       <Dialog.Title>Nowy wniosek urlopowy</Dialog.Title>
     </Dialog.Header>
-        <SuperDebug data={$formData} collapsible />
+        <SuperDebug data={$formData} display={dev} collapsible />
         <form method="POST" use:enhance>
         <div class="grid gap-6 text-center">
             {#if $message}

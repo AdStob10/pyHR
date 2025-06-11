@@ -6,7 +6,17 @@
 
 
   let { user } : { user : UserWithRole } = $props();
-  console.log(page.url.pathname)
+  const urls = $derived.by(() => {
+    let url = page.url.protocol
+    const splitted = page.url.pathname.split("/").map((val) => {
+      url += val + "/"
+      val = val.charAt(0).toUpperCase() + val.slice(1)
+      return {label: val, href: url}
+    }).filter(val => val.label != "")
+    return splitted
+  })
+
+
 </script>
 
 <Breadcrumb.Root class="hidden md:flex">
@@ -14,14 +24,12 @@
       <Breadcrumb.Item>
         <Breadcrumb.Link href="/">Panel</Breadcrumb.Link>
       </Breadcrumb.Item>
+      {#each urls as u}
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Link href="##">TEST</Breadcrumb.Link>
-      </Breadcrumb.Item>
-      <Breadcrumb.Separator />
-      <Breadcrumb.Item>
-        <Breadcrumb.Page>Test</Breadcrumb.Page>
-      </Breadcrumb.Item>
+        <Breadcrumb.Link href={u.href}>{u.label}</Breadcrumb.Link>
+      </Breadcrumb.Item>  
+      {/each}
     </Breadcrumb.List>
   </Breadcrumb.Root>
 <div class="ml-auto md:grow-0 flex items-center gap-1 text-lg">

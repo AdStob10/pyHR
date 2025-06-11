@@ -1,4 +1,4 @@
-import { API_URL } from "$env/static/private";
+import { env } from '$env/dynamic/private';
 import { addRequestSchema,   type AddRequestSchema } from "$lib/components/custom/Forms/schema";
 import type { VacationRequest } from "$lib/types";
 import { flattenVacationRequest } from "$lib/utils/objects";
@@ -18,7 +18,7 @@ export const actions: Actions = {
     try {
       const { data } = form
       const flatData = flattenVacationRequest(data)
-      const res = await event.fetch(`${API_URL}/vacation/add`, {
+      const res = await event.fetch(`${env.API_URL}/vacation/add`, {
         method: "POST",
         body: JSON.stringify(flatData),
         headers: {

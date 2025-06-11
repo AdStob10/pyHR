@@ -7,7 +7,7 @@ import { redirect } from "@sveltejs/kit";
 
 
 export const load: PageLoad = async ({fetch, url}) => {
-    const apiUrl = `/api/vacation/requests?${url.searchParams}`;
+    const apiUrl = `/api/vacation/requests?limit=5&${url.searchParams}`;
     const response = await fetch(apiUrl)
     if (response.status == 401) {
         redirect(303, "/signout")
