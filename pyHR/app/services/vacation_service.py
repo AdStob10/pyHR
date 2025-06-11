@@ -59,6 +59,8 @@ class VacationService:
         return Response(data=available_days)
 
 
+    def get_vacation_days_by_month(self, employee: User):
+        return self.vacation_repository.get_vacation_days_by_month(employee.id)
 
     def get_available_vacation_types(self):
         return self.vacation_repository.get_available_vacation_types()
@@ -138,7 +140,16 @@ class VacationService:
             case VacationRequestStatus.REJECTED:
                 employee_available_days = self.vacation_repository.get_employee_available_days(request.employee_id, request.vacation_type_id)
                 vacation_range = request.end_date - request.start_date
-                employee_available_days.available_days += vacation_range.days
+                vacation_duration = vacation_range.days
+
+                # if start date is equal to end date then we have one day vacation
+                if vacation_duration == 0:
+                    vacation_duration = 1
+                # otherwise we have to add one day (count start date as first day of vacation)
+                else:
+                    vacation_duration += 1
+
+                employee_available_days.available_days += vacation_duration
                 request.status = VacationRequestStatus.REJECTED
                 request = self.vacation_repository.save_vacation_request_and_avail_days(request, employee_available_days)
                 return Response(data=request)

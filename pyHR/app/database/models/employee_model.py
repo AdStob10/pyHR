@@ -1,8 +1,7 @@
 import enum
 from datetime import datetime
-from typing import Annotated, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
-from pydantic import BaseModel
 from sqlalchemy import Column, Integer
 from sqlmodel import Field, SQLModel, Relationship
 
@@ -35,7 +34,7 @@ class User(SQLModel):
         return f"<User id:{self.id}, username:{self.username}, role:{self.role}>"
 
 
-class UserPublic(CamelBaseModel):
+class UserPublic(CamelSQLModel):
     id: int
     username: str
     first_name: str
@@ -47,6 +46,8 @@ class UserPublic(CamelBaseModel):
 class Employee(User, table=True):
     id: int = Field(sa_column=Column(Integer, primary_key=True))
     employment_date: datetime
+    job_title: str = Field(max_length=150, nullable=True)
+    department: str = Field(max_length=150, nullable=True)
 
 
     manager_id: int = Field(foreign_key='employee.id', nullable=True)
@@ -60,9 +61,11 @@ class Employee(User, table=True):
     employees_requests: list["VacationRequest"] = Relationship(back_populates="manager", sa_relationship_kwargs={"foreign_keys": "VacationRequest.manager_id"})
 
 
-class EmployeePublic(CamelSQLModel):
-    id: int
-    first_name: str
-    last_name: str
-    employment_date: datetime
+class EmployeePublic(UserPublic):
+    employment_date: datetime | None
+    job_title: str | None
+    department: str | None
 
+
+class EmployeePublicWithManager(EmployeePublic):
+    manager: EmployeePublic

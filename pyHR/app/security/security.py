@@ -9,11 +9,10 @@ from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
+from loguru import logger
 from passlib.context import CryptContext
 from pydantic import ValidationError, BaseModel
 from starlette import status
-
-from loguru import logger
 
 from app.database.models.employee_model import User, EmployeeRole
 from app.services.user_service import UserService

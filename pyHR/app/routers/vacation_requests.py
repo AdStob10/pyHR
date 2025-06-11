@@ -5,7 +5,7 @@ from fastapi import APIRouter, Path, Query
 from ..database.model_utils import PaginatedList
 from ..database.models.subordinate_request_model import SubordinateRequestPublic
 from ..database.models.vacation_request_model import VacationRequestPublic, VacationRequestCreate, \
-    EmployeeAvailableDaysPublic, VacationRequestStatus, VacationTypeBase
+    EmployeeAvailableDaysPublic, VacationRequestStatus, VacationTypeBase, VacationDaysInMonth
 from ..dependencies.deps import FilterParamsDep, Response
 from ..dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 from ..security.security import CurrentUser, ManagerUser
@@ -70,6 +70,14 @@ async def get_user_available_days(
     vacation_service: VacationServiceDep
 ) -> EmployeeAvailableDaysPublic:
     return vacation_service.get_user_available_days(user, vacation_type).get_model()
+
+
+@router.get("/report/months", response_model=list[VacationDaysInMonth])
+async def get_vacation_days_by_month(
+    user: CurrentUser,
+    vacation_service: VacationServiceDep
+) -> list[VacationDaysInMonth]:
+    return vacation_service.get_vacation_days_by_month(user)
 
 
 @router.get("/types", response_model=list[VacationTypeBase])

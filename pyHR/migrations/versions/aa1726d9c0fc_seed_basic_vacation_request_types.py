@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'aa1726d9c0fc'
-down_revision: Union[str, None] = '25930cf0bc12'
+down_revision: Union[str, None] = 'e745bc2b55b9'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -62,6 +62,16 @@ def upgrade() -> None:
 
     op.bulk_insert(available_employee_days, [
         {
+            "employee_id": 3,
+            "vacation_type_id": 1,
+            "available_days": 26,
+        },
+        {
+            "employee_id": 3,
+            "vacation_type_id": 3,
+            "available_days": 4,
+        },
+        {
             "employee_id": 1,
             "vacation_type_id": 1,
             "available_days": 26,
@@ -70,10 +80,20 @@ def upgrade() -> None:
             "employee_id": 1,
             "vacation_type_id": 3,
             "available_days": 4,
+        },
+        {
+            "employee_id": 2,
+            "vacation_type_id": 1,
+            "available_days": 26,
+        },
+        {
+            "employee_id": 2,
+            "vacation_type_id": 3,
+            "available_days": 4,
         }
     ])
 
 
 def downgrade() -> None:
-    op.execute("DELETE FROM employee_vacation_type_available_days where employee_id = 1")
+    op.execute("DELETE FROM employee_vacation_type_available_days where employee_id in (1,2,3)")
     op.execute("DELETE FROM vacation_request_type where vacation_type_id <= 6")

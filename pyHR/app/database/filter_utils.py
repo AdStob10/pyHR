@@ -19,14 +19,10 @@ class FilterTransfomer(Generic[T]):
     def transform_filters(self) -> Select | SelectOfScalar:
         model_dumped = self.filters.model_dump()
 
-        #logger.info("Filters = {}", model_dumped)
         fields: dict[str, FieldInfo] = type(self.filters).model_fields
-        #logger.info("Filters FIELDS = {}", fields)
-        #logger.info("Columns stmt = {}", self.cols)
         for k, v in model_dumped.items():
             if v is None or k in ["offset", "limit"] or k.startswith("sort"):
                 continue
-            print(f"{k}: {v}, {fields[k].annotation}")
             self._transform_single_field(k, v, fields[k].annotation)
 
         return self.stmt
@@ -37,24 +33,18 @@ class FilterTransfomer(Generic[T]):
 
         match value_type:
             case builtins.int:
-                #print(f"{name}: {value} int")
                 self._transform_int_type(name, value)
             case builtins.str:
-                #print(f"{name}: {value} To jest str")
                 self._transform_str_type(name, f"%{value}%")
             case datetime.date:
-                #print(f"{name}: {value} To jest date")
                 self._transform_date_type(name, value)
             case _:
-                #print(f"{name}: {value} to jest default")
                 self._transform_default_type(name, value)
 
 
     def _transform_int_type(self, name: str, value: int):
         col: ColumnElement[int] = self.cols[name]
         self.stmt = self.stmt.where(col == value)
-        #print(f"{name} a kolumna {self.cols[name]}")
-        #print(f"Typ {type(self.cols[name])}")
 
     def _transform_str_type(self, name: str, value: str):
         col: ColumnElement[str] = self.cols[name]
@@ -65,12 +55,10 @@ class FilterTransfomer(Generic[T]):
         col: ColumnElement[datetime.date] = self.cols[col_name]
         self._transform_clause_by_operator(col, operator, value)
 
-
     def _transform_default_type(self, name: str, value: Any):
         col: ColumnElement = self.cols[name]
         self.stmt = self.stmt.where(col == value)
-        #print(f"{name} a kolumna {self.cols[name]}")
-        #print(f"Typ {type(self.cols[name])}")
+
 
 
     def _transform_clause_by_operator(self, col: ColumnElement, operator: str, value: Any):

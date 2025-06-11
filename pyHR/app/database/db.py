@@ -16,12 +16,6 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 engine = create_engine(DATABASE_URL)
 
 
-
-
-# def create_db():
-#     logger.debug("CREATING DATABASE")
-#     SQLModel.metadata.create_all(engine)
-
 def get_session() -> Session:
     with Session(engine) as session:
         yield session

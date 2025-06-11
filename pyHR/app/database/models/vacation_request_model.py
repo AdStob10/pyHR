@@ -84,3 +84,10 @@ class VacationRequestCreate(CamelSQLModel):
     reason: str | None = None
     status: VacationRequestStatus | None = Field(default=VacationRequestStatus.NEW)
     vacation_type_id: int
+
+
+class VacationDaysInMonth(CamelSQLModel):
+    month: int
+    accepted_days: int
+    new_days: int
+    rejected_days: int

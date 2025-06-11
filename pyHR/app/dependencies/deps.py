@@ -1,16 +1,7 @@
 from typing import Any, TypeVar, Generic, Annotated
 
 from fastapi import Query, HTTPException
-from loguru import logger
-from pydantic import BaseModel, Field, model_serializer
-from pydantic_core.core_schema import SerializerFunctionWrapHandler
-
-
-# Lokalizacja
-# i18n.load_path.append("./translations")
-# i18n.set('filename_format', '{locale}.{format}')
-# i18n.set('enable_memoization', 'true')
-# i18n.set('fallback_locale', 'en')
+from pydantic import BaseModel, Field
 
 
 class BaseListParams(BaseModel):
@@ -19,7 +10,7 @@ class BaseListParams(BaseModel):
     Dziedzicząc po tej klasie możemy zdefiniować dodatkowe pola po których można filtrować dane
     """
     offset: int = Field(0, ge=0)
-    limit: int = Field(10, ge=0, le=100)
+    limit: int = Field(5, ge=0, le=100)
 
 
 FilterParamsDep = Annotated[BaseListParams, Query()]

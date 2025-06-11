@@ -1,16 +1,15 @@
 from datetime import date
 
+from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 from sqlmodel import select, or_, and_, func
 
 from .base_repository import BaseRepository
-from ..db import SessionDep
-from ..filter_utils import FilterTransfomer
 from ..model_utils import PaginatedList
 from ..models.employee_model import Employee
 from ..models.subordinate_request_model import SubordinateRequestPublic
 from ..models.vacation_request_model import VacationRequest, VacationRequestPublic, EmployeeVacationTypeAvailableDays, \
-    EmployeeAvailableDaysPublic, VacationRequestStatus, VacationType
+    EmployeeAvailableDaysPublic, VacationRequestStatus, VacationType, VacationDaysInMonth
 from ..utils import apply_filters_and_sort
 from ...dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 
@@ -93,6 +92,23 @@ class VacationRepository(BaseRepository):
     def get_available_vacation_types(self):
         stmt = select(VacationType)
         return self.session.exec(stmt).all()
+
+
+    def get_vacation_days_by_month(self, employee_id: int) -> list[VacationDaysInMonth]:
+        stmt_text = """
+        select EXTRACT(MONTH FROM start_date) AS MONTH, 
+        SUM(CASE WHEN status = 'ACCEPTED' THEN (end_date-start_Date)+1 ELSE 0 END) as accepted_days, 
+        SUM(CASE WHEN status = 'NEW' THEN (end_date-start_Date)+1 ELSE 0 END) as new_days, 
+        SUM(CASE WHEN status = 'REJECTED' THEN (end_date-start_Date)+1 ELSE 0 END) as rejected_days 
+        from vacation_request 
+        where employee_id=:id 
+        GROUP BY MONTH
+        """
+        stmt = text(stmt_text)
+        result = self.session.exec(stmt, params={"id": employee_id}).fetchall()
+        vacation_days_monthly = [VacationDaysInMonth(**row._mapping) for row in result]
+        return vacation_days_monthly
+
 
     def save_vacation_request_and_avail_days(self, request: VacationRequest, available_days: EmployeeVacationTypeAvailableDays) -> VacationRequest:
         self.session.add(request)

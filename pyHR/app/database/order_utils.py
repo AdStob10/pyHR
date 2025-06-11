@@ -21,14 +21,12 @@ class OrderByTransfomer(Generic[T]):
         model_dumped = self.filters.model_dump()
         order_params = {k: v for k, v in model_dumped.items() if k.startswith('sort') and v is not None}
 
-        print(f"params_sort = {order_params}")
         if len(order_params) == 0 and self.default_sort_col:
             col: ColumnElement = self.cols[self.default_sort_col]
             self.stmt = self.stmt.order_by(col)
             return self.stmt
 
         for k, v in order_params.items():
-            #print(f"Order param: {k}: {v}")
             self._transform_single_order_by(k, v)
 
         return self.stmt

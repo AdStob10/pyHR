@@ -4,13 +4,11 @@ from loguru import logger
 
 class InterceptHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
-        # Get corresponding Loguru level if it exists.
         try:
             level: str | int = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
 
-        # Find caller from where originated the logged message.
         frame, depth = inspect.currentframe(), 0
         while frame:
             filename = frame.f_code.co_filename
