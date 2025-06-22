@@ -19,7 +19,6 @@ services:
     container_name: pyhr_api
     profiles: ["api", "backend","production"]
     build: ./pyHR
-    entrypoint: uvicorn app.main:app --host 0.0.0.0 --reload
     volumes:
       - ./pyHR/app:/code/app
     environment:
