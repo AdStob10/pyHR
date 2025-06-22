@@ -10,7 +10,12 @@ from app.dependencies.deps import BaseListParams
 
 T = TypeVar("T", bound=BaseListParams)
 
+
 class FilterTransfomer(Generic[T]):
+    """
+        Object that appends filters to sql alchemy query based on pydantic model
+    """
+
     def __init__(self, filter_params: T, stmt: Select | SelectOfScalar):
         self.filters = filter_params
         self.stmt = stmt
@@ -27,7 +32,7 @@ class FilterTransfomer(Generic[T]):
 
         return self.stmt
 
-    def _transform_single_field(self, name: str, value: Any,  field_type: type):
+    def _transform_single_field(self, name: str, value: Any, field_type: type):
         union_type_args = get_args(field_type)
         value_type: type = [x for x in union_type_args if x != type(None)][0]
 
@@ -40,7 +45,6 @@ class FilterTransfomer(Generic[T]):
                 self._transform_date_type(name, value)
             case _:
                 self._transform_default_type(name, value)
-
 
     def _transform_int_type(self, name: str, value: int):
         col: ColumnElement[int] = self.cols[name]
@@ -58,8 +62,6 @@ class FilterTransfomer(Generic[T]):
     def _transform_default_type(self, name: str, value: Any):
         col: ColumnElement = self.cols[name]
         self.stmt = self.stmt.where(col == value)
-
-
 
     def _transform_clause_by_operator(self, col: ColumnElement, operator: str, value: Any):
         match operator:

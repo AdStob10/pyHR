@@ -1,8 +1,14 @@
 import inspect
 import logging
+
 from loguru import logger
 
+
 class InterceptHandler(logging.Handler):
+    """
+    Intercepts logging records to use loguru library instead of logging.Logger.
+    """
+
     def emit(self, record: logging.LogRecord) -> None:
         try:
             level: str | int = logger.level(record.levelname).name
@@ -22,13 +28,13 @@ class InterceptHandler(logging.Handler):
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-
-
 def setup_logging():
+    """
+    Intercepts different loggers
+    :return:
+    """
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
 
-    for name in ["uvicorn", "uvicorn.error", "uvicorn.access", "fastapi", "sqlalchemy.engine","sqlalchemy.pool"]:
+    for name in ["uvicorn", "uvicorn.error", "uvicorn.access", "fastapi", "sqlalchemy.engine", "sqlalchemy.pool"]:
         logging.getLogger(name).handlers = [InterceptHandler()]
         logging.getLogger(name).propagate = False
-
-

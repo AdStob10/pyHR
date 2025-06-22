@@ -23,6 +23,7 @@ vacation_type = sa.table(
     'vacation_type',
     sa.column('id', sa.Integer),
     sa.column('name', sa.String),
+    sa.column('default_available_days', sa.Integer),
 )
 
 available_employee_days = sa.table(
@@ -36,27 +37,33 @@ def upgrade() -> None:
     op.bulk_insert(vacation_type, [
         {
             "id": 1,
-            "name": "urlop wypoczynkowy"
+            "name": "urlop wypoczynkowy",
+            "default_available_days": 20
         },
         {
             "id": 2,
-            "name": "urlop okolicznościowy"
+            "name": "urlop okolicznościowy",
+            "default_available_days": None
         },
         {
             "id": 3,
-            "name": "urlop na żądanie"
+            "name": "urlop na żądanie",
+            "default_available_days": 4
         },
         {
             "id": 4,
-            "name": "urlop bezpłatny"
+            "name": "urlop bezpłatny",
+            "default_available_days": None
         },
         {
             "id": 5,
-            "name": "opieka nad dzieckiem"
+            "name": "opieka nad dzieckiem",
+            "default_available_days": None
         },
         {
             "id": 6,
-            "name": "urlop macierzyński"
+            "name": "urlop macierzyński",
+            "default_available_days": None
         }
     ])
 
@@ -96,4 +103,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.execute("DELETE FROM employee_vacation_type_available_days where employee_id in (1,2,3)")
-    op.execute("DELETE FROM vacation_request_type where vacation_type_id <= 6")
+    op.execute("DELETE FROM vacation_type where id <= 6")

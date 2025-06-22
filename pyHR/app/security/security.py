@@ -10,12 +10,11 @@ from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from loguru import logger
-from passlib.context import CryptContext
 from pydantic import ValidationError, BaseModel
 from starlette import status
 
 from app.database.models.employee_model import User, EmployeeRole
-from app.services.user_service import UserService
+from app.services.user_service import UserService, verify_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login/access-token')
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
@@ -30,15 +29,10 @@ class TokenData(BaseModel):
     """Access Token Model"""
     sub: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-
-
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def authenticate(
@@ -46,7 +40,13 @@ def authenticate(
         password: str,
         user_service: Annotated[UserService, Depends(UserService)]
 ) -> User | None:
-    """Authenticate User - Verifies User Credentials"""
+    """
+    Verifies user credentials
+    :param username: username
+    :param password: user password
+    :param user_service: user service dependency
+    :return: authenticated user
+    """
     user = user_service.get_user_by_username(username)
     if not user:
         return None
@@ -58,17 +58,28 @@ def authenticate(
 
 
 def create_access_token(sub: str | Any, expire_time: timedelta = ACCESS_TOKEN_EXPIRE_MINUTES) -> str:
-    """Creates access token for user"""
+    """
+    Creates a JWT access token
+    :param sub: title
+    :param expire_time: expire time
+    :return: token as `string`
+    """
     expire_in = datetime.now(timezone.utc) + expire_time
     to_encode = {"sub": str(sub), "exp": expire_in}
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
+
 async def get_current_user(
         token: TokenDep,
         user_service: Annotated[UserService, Depends(UserService)]
 ) -> User:
-    """Gets current user based on token data"""
+    """
+    Get user by access token
+    :param token:
+    :param user_service:
+    :return: authenticated user
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -87,13 +98,25 @@ async def get_current_user(
         raise credentials_exception
     return user
 
+
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
+
 class CurrentUserByRole:
+    """
+        Class dependency for checking if user has required role
+    """
+
     def __init__(self, role: EmployeeRole):
         self.role = role
 
     def __call__(self, user: CurrentUser):
+        """
+        Check if user has required role
+        Otherwise raise exception
+        :param user:
+        :return: authenticated user with required role
+        """
         if user.role is None or user.role != self.role:
             role_exception = HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -103,14 +126,6 @@ class CurrentUserByRole:
             raise role_exception
         return user
 
+
 manage_role_checker = CurrentUserByRole(EmployeeRole.MANAGER)
 ManagerUser = Annotated[User, Depends(manage_role_checker)]
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def verify_password(plain, hashed) -> bool:
-    return pwd_context.verify(plain, hashed)
-

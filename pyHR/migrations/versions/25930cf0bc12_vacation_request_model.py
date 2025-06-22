@@ -10,7 +10,7 @@ from typing import Sequence, Union
 import sqlmodel
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = '25930cf0bc12'
@@ -26,6 +26,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
+    sa.Column('default_available_days', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('employee_vacation_type_available_days',
@@ -57,4 +58,6 @@ def downgrade() -> None:
     op.drop_table('vacation_request')
     op.drop_table('employee_vacation_type_available_days')
     op.drop_table('vacation_type')
+    status = postgresql.ENUM('NEW', 'ACCEPTED', 'REJECTED', name='vacationrequeststatus')
+    status.drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###

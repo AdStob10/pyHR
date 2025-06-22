@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 
+from fastapi import APIRouter, Depends
 from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
 from ..database.models.employee_model import UserPublic
@@ -30,7 +30,6 @@ async def access_token(
         )
     token = create_access_token(user.username)
     return Token(access_token=token, token_type="bearer")
-
 
 
 @router.get("/info", response_model=UserPublic)

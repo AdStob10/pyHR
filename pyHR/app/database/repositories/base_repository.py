@@ -5,7 +5,7 @@ from app.database.db import SessionDep
 
 class BaseRepository:
     def __init__(self, session: SessionDep):
-        self.session: SessionDep  = session
+        self.session: SessionDep = session
 
     def save_model(self, model: Any):
         self.session.add(model)

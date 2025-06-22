@@ -1,6 +1,5 @@
-from typing import Generic, Any
+from typing import Generic
 
-from pydantic.fields import FieldInfo
 from sqlalchemy import ColumnElement
 from sqlmodel.sql._expression_select_cls import Select, SelectOfScalar
 from typing_extensions import TypeVar
@@ -10,7 +9,12 @@ from app.dependencies.query_params import SortType
 
 T = TypeVar('T', bound=BaseListParams)
 
+
 class OrderByTransfomer(Generic[T]):
+    """
+        Object that appends sorting order to sql alchemy query based on pydantic model
+    """
+
     def __init__(self, filter_params: T, stmt: Select | SelectOfScalar, default_sort_col: str | None):
         self.filters = filter_params
         self.stmt = stmt
@@ -31,10 +35,8 @@ class OrderByTransfomer(Generic[T]):
 
         return self.stmt
 
-
-
     def _transform_single_order_by(self, name: str, value: SortType):
-        _, col_name =  name.split(sep="_", maxsplit=1)
+        _, col_name = name.split(sep="_", maxsplit=1)
         col: ColumnElement = self.cols[col_name]
 
         match value:

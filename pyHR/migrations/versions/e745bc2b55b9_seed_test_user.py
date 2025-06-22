@@ -19,7 +19,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 users_table = sa.table(
     'employee',
-    sa.column('id', sa.Integer),
     sa.column('username', sa.String),
     sa.column("password", sa.String),
     sa.column('first_name', sa.String),
@@ -38,7 +37,6 @@ def upgrade() -> None:
 
     op.bulk_insert(users_table, [
         {
-            'id': 1,
             'username': 'admin',
             'password': '$2a$12$wHwdTFpL2MJ2cbqwpi2uDur0TthhKhAPlLi.ZTmSIk18t/QB1YWeW',
             'first_name': 'Jarosław',
@@ -54,7 +52,6 @@ def upgrade() -> None:
 
     op.bulk_insert(users_table, [
         {
-            'id': 2,
             'username': 'test_man',
             'password': '$2a$12$wHwdTFpL2MJ2cbqwpi2uDur0TthhKhAPlLi.ZTmSIk18t/QB1YWeW',
             'first_name': 'Jan',
@@ -71,7 +68,6 @@ def upgrade() -> None:
 
     op.bulk_insert(users_table, [
         {
-            'id': 3,
             'username': 'test_emp',
             'password': '$2a$12$wHwdTFpL2MJ2cbqwpi2uDur0TthhKhAPlLi.ZTmSIk18t/QB1YWeW',
             'first_name':'Antoni',

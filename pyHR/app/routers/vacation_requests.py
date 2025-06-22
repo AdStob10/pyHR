@@ -6,7 +6,7 @@ from ..database.model_utils import PaginatedList
 from ..database.models.subordinate_request_model import SubordinateRequestPublic
 from ..database.models.vacation_request_model import VacationRequestPublic, VacationRequestCreate, \
     EmployeeAvailableDaysPublic, VacationRequestStatus, VacationTypeBase, VacationDaysInMonth
-from ..dependencies.deps import FilterParamsDep, Response
+from ..dependencies.deps import FilterParamsDep
 from ..dependencies.query_params import VacationRequestListParams, SubordinateRequestListParams
 from ..security.security import CurrentUser, ManagerUser
 from ..services.vacation_service import VacationServiceDep
@@ -18,64 +18,64 @@ router = APIRouter(
 )
 
 
-
 @router.get("/requests")
 async def get_user_vacation_requests(
-    get_user_vacations_query: Annotated[VacationRequestListParams, Query()],
-    user: CurrentUser,
-    vacation_service: VacationServiceDep
+        get_user_vacations_query: Annotated[VacationRequestListParams, Query()],
+        user: CurrentUser,
+        vacation_service: VacationServiceDep
 ) -> PaginatedList[VacationRequestPublic]:
     return vacation_service.get_user_vacation_requests(user, get_user_vacations_query)
 
+
 @router.get("/requests/{vacation_id}", response_model=VacationRequestPublic)
 async def get_user_request_by_id(
-    vacation_id: Annotated[int, Path(title="Vacation Id", ge=1)],
-    user: CurrentUser,
-    vacation_service: VacationServiceDep
+        vacation_id: Annotated[int, Path(title="Vacation Id", ge=1)],
+        user: CurrentUser,
+        vacation_service: VacationServiceDep
 ) -> VacationRequestPublic:
     return vacation_service.get_user_request_by_id(user, vacation_id).get_model()
 
 
 @router.get("/employees")
 async def get_subordinates_vacation_requests(
-    get_subordinates_vacations_query: Annotated[SubordinateRequestListParams, Query()],
-    user: ManagerUser,
-    vacation_service: VacationServiceDep
+        get_subordinates_vacations_query: Annotated[SubordinateRequestListParams, Query()],
+        user: ManagerUser,
+        vacation_service: VacationServiceDep
 ) -> PaginatedList[SubordinateRequestPublic]:
     return vacation_service.get_subordinates_requests(user, get_subordinates_vacations_query)
 
+
 @router.get("/employees/{vacation_id}", response_model=SubordinateRequestPublic)
 async def get_subordinate_request_by_id(
-    vacation_id: Annotated[int, Path(title="Vacation Id", ge=1)],
-    user: ManagerUser,
-    vacation_service: VacationServiceDep
+        vacation_id: Annotated[int, Path(title="Vacation Id", ge=1)],
+        user: ManagerUser,
+        vacation_service: VacationServiceDep
 ) -> VacationRequestPublic:
     return vacation_service.get_subordinate_request_by_id(user, vacation_id).get_model()
 
 
-
 @router.get("/available", response_model=list[EmployeeAvailableDaysPublic])
 async def get_user_all_available_days(
-    filter_query: FilterParamsDep,
-    user: CurrentUser,
-    vacation_service: VacationServiceDep
+        filter_query: FilterParamsDep,
+        user: CurrentUser,
+        vacation_service: VacationServiceDep
 ) -> list[EmployeeAvailableDaysPublic]:
     return vacation_service.get_user_all_available_days(user, **filter_query.model_dump())
 
 
 @router.get("/available/{vacation_type}", response_model=EmployeeAvailableDaysPublic)
 async def get_user_available_days(
-    vacation_type: Annotated[int, Path(title="Type of vacation", ge=1)],
-    user: CurrentUser,
-    vacation_service: VacationServiceDep
+        vacation_type: Annotated[int, Path(title="Type of vacation", ge=1)],
+        user: CurrentUser,
+        vacation_service: VacationServiceDep
 ) -> EmployeeAvailableDaysPublic:
     return vacation_service.get_user_available_days(user, vacation_type).get_model()
 
 
 @router.get("/report/months", response_model=list[VacationDaysInMonth])
 async def get_vacation_days_by_month(
-    user: CurrentUser,
-    vacation_service: VacationServiceDep
+        user: CurrentUser,
+        vacation_service: VacationServiceDep
 ) -> list[VacationDaysInMonth]:
     return vacation_service.get_vacation_days_by_month(user)
 
@@ -94,6 +94,7 @@ async def add_vacation_request(
         vacation_service: VacationServiceDep
 ) -> VacationRequestPublic:
     return vacation_service.add_new_vacation_request(user, vacation_request).get_model()
+
 
 @router.post("/requests/{vacation_request_id}/status")
 async def change_vacation_request_status(

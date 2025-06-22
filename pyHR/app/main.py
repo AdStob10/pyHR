@@ -13,10 +13,14 @@ app.include_router(employee.router)
 app.include_router(vacation_requests.router)
 
 
-
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def set_translations_by_header(request: Request, call_next):
+    """
+    Middleware for setting translations by Accept-Language header
+    :param request:
+    :param call_next:
+    :return:
+    """
     await set_locale(request)
     response = await call_next(request)
     return response
-

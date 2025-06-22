@@ -2,19 +2,20 @@ import enum
 from datetime import date
 from typing import Optional, TYPE_CHECKING
 
-
 from sqlmodel import SQLModel, Field, Relationship
 
 from ..model_utils import CamelSQLModel
 
 if TYPE_CHECKING:
-    from .employee_model import Employee, EmployeePublic
+    from .employee_model import Employee
 
 
-class VacationTypeBase(SQLModel):
+class VacationTypeBase(CamelSQLModel):
     id: int = Field(primary_key=True)
     name: str = Field(nullable=False)
+    default_available_days: int | None = Field(nullable=True)
     description: Optional[str] = Field()
+
 
 class VacationType(VacationTypeBase, table=True):
     __tablename__ = "vacation_type"
@@ -23,19 +24,20 @@ class VacationType(VacationTypeBase, table=True):
     users_available_days: list["EmployeeVacationTypeAvailableDays"] = Relationship(back_populates="vacation_type")
 
 
-
 class EmployeeVacationTypeAvailableDaysBase(CamelSQLModel):
     employee_id: int = Field(foreign_key="employee.id", primary_key=True)
     vacation_type_id: int = Field(foreign_key="vacation_type.id", primary_key=True)
     available_days: int = Field(default=0)
+
 
 class EmployeeVacationTypeAvailableDays(EmployeeVacationTypeAvailableDaysBase, table=True):
     __tablename__ = "employee_vacation_type_available_days"
     employee: "Employee" = Relationship(back_populates="vacation_type_available_days")
     vacation_type: "VacationType" = Relationship(back_populates="users_available_days")
 
+
 class EmployeeAvailableDaysPublic(EmployeeVacationTypeAvailableDaysBase):
-     vacation_type: VacationTypeBase
+    vacation_type: VacationTypeBase
 
 
 class VacationRequestStatus(int, enum.Enum):
@@ -56,10 +58,12 @@ class VacationRequest(SQLModel, table=True):
     vacation_type: VacationType = Relationship(back_populates="vacation_requests")
 
     employee_id: int = Field(foreign_key='employee.id', ondelete='CASCADE')
-    employee: "Employee" = Relationship(back_populates="vacation_requests", sa_relationship_kwargs={"foreign_keys": "VacationRequest.employee_id"})
+    employee: "Employee" = Relationship(back_populates="vacation_requests",
+                                        sa_relationship_kwargs={"foreign_keys": "VacationRequest.employee_id"})
 
     manager_id: int = Field(foreign_key='employee.id', ondelete='SET NULL', nullable=True)
-    manager: "Employee" = Relationship(back_populates="employees_requests", sa_relationship_kwargs={"foreign_keys": "VacationRequest.manager_id"})
+    manager: "Employee" = Relationship(back_populates="employees_requests",
+                                       sa_relationship_kwargs={"foreign_keys": "VacationRequest.manager_id"})
 
     def __repr__(self):
         return f"""<VacationRequest {self.id}, 
@@ -69,7 +73,6 @@ class VacationRequest(SQLModel, table=True):
          end_date: {self.end_date}>"""
 
 
-
 class VacationRequestPublic(CamelSQLModel):
     id: int
     start_date: date
@@ -77,6 +80,7 @@ class VacationRequestPublic(CamelSQLModel):
     reason: str | None
     vacation_type: VacationType
     status: VacationRequestStatus
+
 
 class VacationRequestCreate(CamelSQLModel):
     start_date: date = Field()

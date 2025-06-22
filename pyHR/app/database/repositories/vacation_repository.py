@@ -16,7 +16,8 @@ from ...dependencies.query_params import VacationRequestListParams, SubordinateR
 
 class VacationRepository(BaseRepository):
 
-    def get_employee_requests(self, employee_id: int, filter_params: VacationRequestListParams) -> PaginatedList[VacationRequestPublic]:
+    def get_employee_requests(self, employee_id: int, filter_params: VacationRequestListParams) -> PaginatedList[
+        VacationRequestPublic]:
         stmt = select(VacationRequest)
         filtered_and_sorted_stmt = (apply_filters_and_sort(stmt, filter_params, "id")
                                     .where(VacationRequest.employee_id == employee_id))
@@ -42,12 +43,13 @@ class VacationRepository(BaseRepository):
 
         return self.session.exec(stmt).first()
 
-    def get_subordinates_requests(self, manager_id: int, filter_params: SubordinateRequestListParams) -> PaginatedList[SubordinateRequestPublic]:
+    def get_subordinates_requests(self, manager_id: int, filter_params: SubordinateRequestListParams) -> PaginatedList[
+        SubordinateRequestPublic]:
         stmt = (select(VacationRequest)
                 .join(VacationRequest.employee)
                 .add_columns(Employee)
                 .options(joinedload(VacationRequest.vacation_type, innerjoin=True),
-                                      joinedload(VacationRequest.employee, innerjoin=True)))
+                         joinedload(VacationRequest.employee, innerjoin=True)))
         filtered_and_sorted_stmt = (apply_filters_and_sort(stmt, filter_params, "id")
                                     .where(VacationRequest.manager_id == manager_id))
 
@@ -68,11 +70,10 @@ class VacationRepository(BaseRepository):
                 .options(joinedload(VacationRequest.vacation_type, innerjoin=True),
                          joinedload(VacationRequest.employee, innerjoin=True)))
 
-
         return self.session.exec(stmt).first()
 
-
-    def get_employee_all_available_days(self, employee_id: int, offset: int, limit: int) -> list[EmployeeAvailableDaysPublic]:
+    def get_employee_all_available_days(self, employee_id: int, offset: int, limit: int) -> list[
+        EmployeeAvailableDaysPublic]:
         stmt = (select(EmployeeVacationTypeAvailableDays)
                 .where(EmployeeVacationTypeAvailableDays.employee_id == employee_id)
                 .offset(offset)
@@ -93,6 +94,9 @@ class VacationRepository(BaseRepository):
         stmt = select(VacationType)
         return self.session.exec(stmt).all()
 
+    def get_vacation_types_with_default_available_days(self) -> list[VacationType]:
+        stmt = select(VacationType).where(VacationType.default_available_days != None)
+        return self.session.exec(stmt).all()
 
     def get_vacation_days_by_month(self, employee_id: int) -> list[VacationDaysInMonth]:
         stmt_text = """
@@ -109,8 +113,8 @@ class VacationRepository(BaseRepository):
         vacation_days_monthly = [VacationDaysInMonth(**row._mapping) for row in result]
         return vacation_days_monthly
 
-
-    def save_vacation_request_and_avail_days(self, request: VacationRequest, available_days: EmployeeVacationTypeAvailableDays) -> VacationRequest:
+    def save_vacation_request_and_avail_days(self, request: VacationRequest,
+                                             available_days: EmployeeVacationTypeAvailableDays) -> VacationRequest:
         self.session.add(request)
         self.session.add(available_days)
         self.session.commit()
@@ -120,8 +124,9 @@ class VacationRepository(BaseRepository):
     def any_vacation_between_start_end_date(self, employee_id: int, start_date: date, end_date: date):
         stmt = (select(func.count())
                 .select_from(VacationRequest)
-                .where(and_(VacationRequest.employee_id == employee_id, VacationRequest.status != VacationRequestStatus.REJECTED)
-                       , or_(and_(VacationRequest.start_date <= start_date, VacationRequest.end_date >= start_date)
-                       , and_(VacationRequest.start_date <= end_date, VacationRequest.end_date >= end_date))
-                ))
+                .where(
+            and_(VacationRequest.employee_id == employee_id, VacationRequest.status != VacationRequestStatus.REJECTED)
+            , or_(and_(VacationRequest.start_date <= start_date, VacationRequest.end_date >= start_date)
+                  , and_(VacationRequest.start_date <= end_date, VacationRequest.end_date >= end_date))
+            ))
         return True if self.session.exec(stmt).first() > 0 else False

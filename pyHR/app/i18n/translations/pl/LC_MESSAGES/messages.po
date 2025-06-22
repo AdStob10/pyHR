@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-21 15:46+0200\n"
+"POT-Creation-Date: 2025-06-22 13:24+0200\n"
 "PO-Revision-Date: 2025-04-30 12:59+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,44 +19,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: services/user_service.py:28
+#: services/user_service.py:41 services/user_service.py:49
+#, fuzzy
+msgid "User not found"
+msgstr "Nie znaleziono menadżera"
+
+#: services/user_service.py:62
 msgid "Manager not found"
 msgstr "Nie znaleziono menadżera"
 
-#: services/vacation_service.py:39 services/vacation_service.py:60
+#: services/user_service.py:69
+msgid "User with provided name already exists, username="
+msgstr "Użytkownik z podaną nazwą już istnieje, nazwa="
+
+#: services/vacation_service.py:35
+#, fuzzy
+msgid "Not found vacation request for employee"
+msgstr "Nie znaleziono wniosku urlopowego"
+
+#: services/vacation_service.py:47
+#, fuzzy
+msgid "Not found subordinate vacation request for employee"
+msgstr "Nie znaleziono wniosku urlopowego"
+
+#: services/vacation_service.py:59 services/vacation_service.py:85
 msgid "Not found available days for employee"
 msgstr "Nie znaleziono dostępnych dni dla pracownika"
 
-#: services/vacation_service.py:52
+#: services/vacation_service.py:77
 #, python-brace-format
 msgid "Not found manager for user {}"
 msgstr "Nie znaleziono menadżera dla pracownika"
 
-#: services/vacation_service.py:65
+#: services/vacation_service.py:89
 msgid "Date range is in the past"
 msgstr "Zakres dat jest w przeszłości"
 
-#: services/vacation_service.py:69
+#: services/vacation_service.py:102
 msgid "Invalid date range"
 msgstr "Nieprawidłowy zakres dat"
 
-#: services/vacation_service.py:72
+#: services/vacation_service.py:105
 msgid "Available days limit exceeded. Available days:"
 msgstr "Przekroczono limit dni. Dostępna ilość dni"
 
-#: services/vacation_service.py:80
+#: services/vacation_service.py:113
 msgid "You already have vacation in selected period"
 msgstr "Masz już urlop w wybranym okresie"
 
-#: services/vacation_service.py:96
+#: services/vacation_service.py:131
 msgid "Not found vacation request"
 msgstr "Nie znaleziono wniosku urlopowego"
 
-#: services/vacation_service.py:99
+#: services/vacation_service.py:134
 msgid "Vacation request already has status"
 msgstr "Wniosek urlopowy posiada już ten status"
 
-#: services/vacation_service.py:105
+#: services/vacation_service.py:140
 msgid "Vacation request is rejected. You cannot change it status"
 msgstr "Wniosek urlopowy jest odrzucony. Nie może zmienić jego statusu"
 

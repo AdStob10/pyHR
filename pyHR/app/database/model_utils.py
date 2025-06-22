@@ -1,8 +1,8 @@
 from typing import Generic
 
+from humps import camelize
 from pydantic import BaseModel
 from sqlmodel import SQLModel
-from humps import camelize
 from typing_extensions import TypeVar
 
 
@@ -16,15 +16,15 @@ class CamelBaseModel(BaseModel):
         validate_by_name = True
 
 
-
 class CamelSQLModel(SQLModel):
     class Config:
         alias_generator = to_camel
         validate_by_name = True
 
 
-
 T = TypeVar("T")
+
+
 class PaginatedList(CamelBaseModel, Generic[T]):
     data: list[T]
     row_count: int

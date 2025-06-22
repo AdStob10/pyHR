@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('last_name', sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
     sa.Column('email', sqlmodel.sql.sqltypes.AutoString(length=150), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('employment_date', sa.DateTime(), nullable=False),
+    sa.Column('employment_date', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_employee_username'), 'employee', ['username'], unique=False)
@@ -37,3 +37,6 @@ def downgrade() -> None:
     """Downgrade schema."""
     op.drop_index(op.f('ix_employee_username'), table_name='employee')
     op.drop_table('employee')
+    from sqlalchemy.dialects import postgresql
+    employee_role = postgresql.ENUM('BASIC_EMPLOYEE', 'MANAGER', 'ADMIN', name='employeerole')
+    employee_role.drop(op.get_bind(), checkfirst=True)
