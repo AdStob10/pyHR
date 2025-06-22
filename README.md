@@ -21,11 +21,22 @@ Aplikacja składa się z trzech komponentów
  - Bazy danych PostgreSQL (port: 5432)
 
 
-Do uruchomienia aplikacji potrzebny jest docker.
+Do uruchomienia aplikacji najlepiej wykorzystać dockera z docker compose. \
 Wersje produkcyjną uruchamia się poniższym poleceniem
  ```
 docker compose --profile production up
  ```
+
+Osobne uruchomienie poszczególnych komponenetów wymaga serwera Nodejs 20+ i Pythona w wersji 3.13. \
+FastAPI
+```
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Nodejs
+```
+npm run dev
+```
 
  W aplikacji zdefiniowanych jest trzech testowych użytkowników o poniższych loginach:
  - `test_emp` - testowe konto zwykłego pracownika
