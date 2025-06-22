@@ -27,7 +27,7 @@ services:
         WATCHFILES_FORCE_POLLING: true
         DB_URL: "postgresql://pyhr_api:pyhr123@db/pyhr"
         SECRET_KEY: "70d02e9318abac8edd40892fa455edc4e888678a8efdbff2c6bdceaaa4bc7b27"
-        ACCESS_TOKEN_EXPIRE_MINUTES: 30
+        ACCESS_TOKEN_EXPIRE_MINUTES: 300
     image: pyhr/api:latest
     depends_on:
       - db
@@ -58,7 +58,7 @@ services:
   pgadmin:
       container_name: pyhr_pgadmin
       image: dpage/pgadmin4:9.2.0
-      profiles: ["database", "backend", "production"]
+      profiles: ["database", "backend"]
       depends_on:
         - db
       ports:
