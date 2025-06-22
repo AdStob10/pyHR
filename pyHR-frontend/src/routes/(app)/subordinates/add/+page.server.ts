@@ -1,14 +1,13 @@
 import { env } from '$env/dynamic/private';
-import { addRequestSchema,   type AddRequestSchema } from "$lib/components/custom/Forms/AddRequest/schema";
-import type { VacationRequest } from "$lib/types";
-import { flattenVacationRequest } from "$lib/utils/objects";
+import { addEmployeeSchema, type AddEmployeeSchema } from "$lib/components/custom/Forms/AddEmployee/schema";
+import type { EmployeeDetails } from "$lib/types";
 import type { Actions } from "@sveltejs/kit";
 import { fail, message, superValidate, type Infer } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate<Infer<AddRequestSchema>>(event, zod(addRequestSchema));
+    const form = await superValidate<Infer<AddEmployeeSchema>>(event, zod(addEmployeeSchema));
 
     if (!form.valid) {
       return fail(400, {
@@ -16,18 +15,15 @@ export const actions: Actions = {
       });
     }
     try {
-      const { data } = form
-      const flatData = flattenVacationRequest(data)
-      const res = await event.fetch(`${env.API_URL}/vacation/add`, {
+      const { data } = form;
+      const res = await event.fetch(`${env.API_URL}/employee/create`, {
         method: "POST",
-        body: JSON.stringify(flatData),
+        body: JSON.stringify(data),
         headers: {
         'Content-Type': 'application/json'
         }
       })
       
-      console.log("data", flatData)
-
       if (res.status == 422 ) {
         const text = await res.text()
         console.error(text)
@@ -40,8 +36,8 @@ export const actions: Actions = {
         return message(form, {status: "error", text: responseData.detail}, {status: res.status})
       }
 
-      const bodyResponse: VacationRequest  = await res.json()
-      return message(form, {status:"success", text:`Dodano wniosek o numerze ${bodyResponse.id}`})
+      const bodyResponse: EmployeeDetails  = await res.json()
+      return message(form, {status:"success", text:`Dodano użytkownika o numerze ${bodyResponse.id}`})
 
     } catch (e) {
       console.error(e)
@@ -51,3 +47,4 @@ export const actions: Actions = {
     
   },
 };
+

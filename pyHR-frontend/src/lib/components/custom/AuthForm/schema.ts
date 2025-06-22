@@ -6,12 +6,12 @@ export const authFormSchema = z.object({
         required_error:"Login jest wymagany",
     })
     .min(3, "Login musi mieć minimum 3 znaki")
-    .max(50, "Login może mieć maksymalnie 50 znaków"),
+    .max(100, "Login może mieć maksymalnie 100 znaków"),
+
+    
     password: z.string({
-        required_error:"Login jest wymagany",
+        required_error:"Hasło jest wymagane",
     })
-    .min(3, "Hasło musi mieć minimum 3 znaki")
-    .max(50, "Login może mieć maksymalnie 50 znaków")
 })
 
 export type AuthFormSchema = typeof authFormSchema;

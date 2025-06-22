@@ -12,8 +12,7 @@ export const load: PageServerLoad = async ({params, fetch, depends}) => {
     }
 
     depends("app:sub:emp:request")
-    const data = await res.json()
     return {
-        vacation:  data
+        vacation:  await res.json()
     } as {vacation: SubordinateVacationRequest}
 };

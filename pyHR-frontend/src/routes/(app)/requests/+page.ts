@@ -2,7 +2,7 @@ import type { PaginatedList, VacationRequest } from "$lib/types";
 import { superValidate, type Infer, type SuperValidated } from "sveltekit-superforms";
 import type { PageLoad} from "./$types";
 import { zod } from "sveltekit-superforms/adapters";
-import { addRequestSchema, type AddRequestSchema } from '$lib/components/custom/Forms/schema';
+import { addRequestSchema, type AddRequestSchema } from '$lib/components/custom/Forms/AddRequest/schema';
 import { redirect } from "@sveltejs/kit";
 
 

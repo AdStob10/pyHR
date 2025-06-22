@@ -5,12 +5,16 @@
 	import { redirect } from "@sveltejs/kit";
 	import type { PageProps } from "./$types";
 	import { availableRoles } from "$lib/utils/objects";
+	import { LoaderCircle } from "@lucide/svelte";
 
     let {data}: PageProps = $props()
+    
 
-    const {employee} = data
 </script>
 
+{#await data} 
+   <div class="flex justify-center align-middle mx-0"> <LoaderCircle class="h-10 w-10 animate-spin" /> </div>
+{:then {employee}}
 <div class="flex justify-center-safe">
 <Card.Root class="basis-1/2">
   <Card.Header>
@@ -61,3 +65,4 @@
   </Card.Footer>
 </Card.Root>
 </div>
+{/await}

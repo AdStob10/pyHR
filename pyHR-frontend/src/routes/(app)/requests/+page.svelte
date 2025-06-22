@@ -16,7 +16,7 @@
 	import type { PageProps } from "../requests/$types";
 	import {fly} from "svelte/transition";
 	import { ChevronsUpDownIcon } from "@lucide/svelte";
-	import AddRequestForm from "$lib/components/custom/Forms/AddRequestForm.svelte";
+	import AddRequestForm from "$lib/components/custom/Forms/AddRequest/AddRequestForm.svelte";
 	import { goto } from "$app/navigation";
 	import { Separator } from "$lib/components/ui/separator";
 

@@ -9,7 +9,7 @@
 	import { LoaderCircle } from "@lucide/svelte";
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
-	import SelectWrapper, { type SelectOption } from "../SelectWrapper/SelectWrapper.svelte";
+	import SelectWrapper, { type SelectOption } from "../../SelectWrapper/SelectWrapper.svelte";
 	import { addRequestSchema, type AddRequestSchema } from "./schema";
     import { dev } from '$app/environment';
 	

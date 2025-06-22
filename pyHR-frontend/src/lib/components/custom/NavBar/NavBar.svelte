@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { UserWithRole } from '$lib/types';
-    import { FilePenLine, Files, LogOut, Settings, UserCog } from '@lucide/svelte';
+    import { FilePenLine, Files, LogOut, Settings, UserCog, Users } from '@lucide/svelte';
 
     let { user } : {user: UserWithRole} = $props()
 </script>
@@ -36,6 +36,16 @@
                 Wnioski pracowników
             </a>
             </nav>   
+            <nav class="grid gap-6 text-lg font-medium">
+            <a
+            href="/subordinates"
+                class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5"
+            >
+                <Users  class="h-5 w-5"/>
+                Pracownicy
+            </a>
+            </nav>   
+         
         {/if}
         <nav class="grid gap-6 text-lg font-medium">
             <a

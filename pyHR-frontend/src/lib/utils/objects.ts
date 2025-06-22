@@ -1,4 +1,4 @@
-import type { AddRequestSchema } from "$lib/components/custom/Forms/schema";
+import type { AddRequestSchema } from "$lib/components/custom/Forms/AddRequest/schema";
 import { Circle, CircleCheckBig, CircleOff,  } from "@lucide/svelte";
 import type { Component } from "svelte";
 import type { Infer } from "sveltekit-superforms";

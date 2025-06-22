@@ -99,9 +99,7 @@
 
 <h1 class="text-lg">Wnioski pracowników</h1>
 <Separator />
-<!-- {#await data.vacations} 
-   <div class="flex justify-center align-middle mx-0"> <LoaderCircle class="h-10 w-10 animate-spin" /> </div>
-{:then resolved} -->
+
 <Collapsible.Root>
 	<div class="flex items-center space-x-4">
 		<h3 class="text-sm font-semibold">Filtry</h3>

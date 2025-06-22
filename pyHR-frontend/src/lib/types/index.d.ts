@@ -15,6 +15,7 @@ type UserData = {
 	username: string;
 	firstName: string;
 	lastName: string;
+	fullName: string;
 	role: number;
 	email: string | undefined;
 };
@@ -85,5 +86,6 @@ export type {
 	SubordinateVacationRequest,
     VacationInMonth,
 	VacationInMonthChartData,
+	EmployeeDetails,
 	EmployeeDetailsWithManager
 };

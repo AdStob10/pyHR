@@ -17,7 +17,7 @@
 </script>
  
 
-<Button {variant} {...restProps} class="text-left ml-0 p-0 hover:bg-background-muted">
+<Button {variant} {...restProps} class="px-0! hover:bg-background-muted">
   {label}
   {#if direction == "asc"}
     <ArrowUpIcon class="ml-1" />
